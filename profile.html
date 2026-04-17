@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOORS Operative Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #020203;
+      --bg-card: #0a0a0f;
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #00E5FF;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(0,229,255,0.05) 0%, transparent 40%);
+    }
+
+    .font-raj { font-family: 'Rajdhani', sans-serif; }
+
+    .nav-glass {
+      background: rgba(2, 2, 3, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .avatar-container {
+      width: 160px;
+      height: 160px;
+      border-radius: 20px;
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 30px rgba(0, 229, 255, 0.2);
+      overflow: hidden;
+      background: #111;
+      position: relative;
+    }
+
+    .avatar-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .status-badge {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 2px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .stat-block {
+      padding: 1rem;
+      background: rgba(255,255,255,0.02);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .val { font-size: 1.8rem; font-weight: 700; color: #fff; line-height: 1.2; }
+    .lbl { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .b-hardcore { border-left: 3px solid #ff3366; }
+    .b-secret { border-left: 3px solid #9d00ff; }
+    .b-progression { border-left: 3px solid #00E5FF; }
+
+    #errorScreen { display: none; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav-glass py-4 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
+      <a href="index.html" class="flex items-center gap-2 text-[#64748b] hover:text-white transition">
+        <span class="font-raj font-bold uppercase tracking-widest text-sm">❮ Return to Database</span>
+      </a>
+    </div>
+  </nav>
+
+  <div id="errorScreen" class="max-w-6xl mx-auto px-6 py-20 text-center">
+    <h1 class="text-4xl font-raj font-bold text-red-500 mb-4">OPERATIVE NOT FOUND</h1>
+    <p class="text-gray-500">The requested ID does not exist in the LQS Database.</p>
+  </div>
+
+  <main id="profileScreen" class="max-w-6xl mx-auto px-6 py-10" style="display: none;">
+    <div class="panel mb-6 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden">
+      <div class="absolute top-0 right-0 p-8 opacity-5 font-raj text-9xl font-bold pointer-events-none" id="bgRank">#1</div>
+      
+      <div class="avatar-container shrink-0">
+        <img id="pAvatar" src="" alt="Avatar">
+        <div id="pStatus" class="status-badge">Online</div>
+      </div>
+      
+      <div class="flex-1 w-full text-center md:text-left z-10">
+        <div class="flex items-center justify-center md:justify-start gap-4 mb-2">
+          <h1 id="pName" class="text-4xl font-raj font-bold">NAME</h1>
+          <span id="pRank" class="bg-white text-black px-3 py-1 rounded font-raj font-bold text-lg">Rank #1</span>
+        </div>
+        <p id="pRegion" class="text-[#64748b] tracking-widest uppercase text-sm mb-6">Region: Unknown</p>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="stat-block"><div id="pRating" class="val text-[#00E5FF] font-raj">0</div><div class="lbl">LQS Rating</div></div>
+          <div class="stat-block"><div id="pWins" class="val font-raj">0</div><div class="lbl">Extractions</div></div>
+          <div class="stat-block"><div id="pHours" class="val font-raj">0</div><div class="lbl">Hours Logged</div></div>
+          <div class="stat-block"><div id="pKnobs" class="val text-[#ffc107] font-raj">0</div><div class="lbl">Total Knobs</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="md:col-span-2 space-y-6">
+        <div class="panel">
+          <h2 class="text-xl font-raj font-bold border-b border-[#ffffff10] pb-3 mb-4">FLOOR EXTRACTIONS</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="floorsGrid"></div>
+        </div>
+
+        <div class="panel">
+          <h2 class="text-xl font-raj font-bold border-b border-[#ffffff10] pb-3 mb-4">ENTITY FATALITIES</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="entitiesGrid"></div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="panel">
+          <h2 class="text-xl font-raj font-bold border-b border-[#ffffff10] pb-3 mb-4 text-[#ffc107]">ECONOMY</h2>
+          <div class="space-y-4" id="economyList"></div>
+        </div>
+
+        <div class="panel">
+          <h2 class="text-xl font-raj font-bold border-b border-[#ffffff10] pb-3 mb-4">ACQUIRED BADGES</h2>
+          <div class="space-y-3" id="badgesList"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="playersdata.js"></script>
+  <script>
+    function f(n) {
+      if(!n) return '0';
+      if(n >= 1000000) return (n/1000000).toFixed(1)+'M';
+      if(n >= 1000) return (n/1000).toFixed(1)+'K';
+      return n.toLocaleString();
+    }
+
+    function calc(p) {
+      const m = {
+        w: Math.max(1, ...playersData.map(x => x.totalWins ?? 0)),
+        k: Math.max(1, ...playersData.map(x => x.economy?.knobs ?? 0)),
+        h: Math.max(1, ...playersData.map(x => x.hoursPlayed ?? 0))
+      };
+      const wS = ((p.totalWins ?? 0) / m.w) * 100;
+      const kS = ((p.economy?.knobs ?? 0) / m.k) * 100;
+      const hS = ((p.hoursPlayed ?? 0) / m.h) * 100;
+      return Math.min(100, (wS * 0.4) + (kS * 0.3) + (hS * 0.3));
+    }
+
+    const u = new URLSearchParams(window.location.search);
+    const pId = u.get('id');
+    const p = playersData.find(x => x.id === pId);
+
+    if(!p) {
+      document.getElementById('errorScreen').style.display = 'block';
+    } else {
+      document.getElementById('profileScreen').style.display = 'block';
+      
+      const av = p.robloxId 
+        ? `https://www.roblox.com/headshot-thumbnail/image?userId=${p.robloxId}&width=420&height=420&format=png` 
+        : 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 24 24" fill="%23222"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
+      
+      document.getElementById('pAvatar').src = av;
+      document.getElementById('pStatus').textContent = p.status || 'Offline';
+      if(p.status !== 'Online') document.getElementById('pStatus').style.borderColor = '#64748b';
+      if(p.status !== 'Online') document.getElementById('pStatus').style.color = '#64748b';
+
+      document.getElementById('pName').textContent = p.name;
+      document.getElementById('pRank').textContent = 'Rank #' + p.rank;
+      document.getElementById('bgRank').textContent = '#' + p.rank;
+      document.getElementById('pRegion').textContent = 'Region: ' + (p.region || 'Unknown');
+      
+      document.getElementById('pRating').textContent = calc(p).toFixed(1);
+      document.getElementById('pWins').textContent = f(p.totalWins);
+      document.getElementById('pHours').textContent = f(p.hoursPlayed);
+      document.getElementById('pKnobs').textContent = f(p.economy?.knobs);
+
+      const fG = document.getElementById('floorsGrid');
+      const fData = [
+        {l: 'The Hotel', v: p.floors?.hotel, c: '#D4AF37'},
+        {l: 'The Mines', v: p.floors?.mines, c: '#7B8C9E'},
+        {l: 'The Rooms', v: p.floors?.rooms, c: '#4A5D23'},
+        {l: 'The Backdoor', v: p.floors?.backdoor, c: '#8A2BE2'},
+        {l: 'Hotel Hell', v: p.floors?.hotelHell, c: '#ff3366'},
+        {l: 'Super Hard', v: p.floors?.superHard, c: '#ff3366'}
+      ];
+      fData.forEach(d => {
+        fG.innerHTML += `<div class="stat-block"><div class="val font-raj" style="color:${d.c}">${f(d.v)}</div><div class="lbl">${d.l}</div></div>`;
+      });
+
+      const eG = document.getElementById('entitiesGrid');
+      const eData = ['rush','ambush','figure','seek','screech','a90'];
+      eData.forEach(k => {
+        eG.innerHTML += `<div class="stat-block"><div class="val text-[#ff2a2a] font-raj">${f(p.entities?.[k])}</div><div class="lbl">${k}</div></div>`;
+      });
+
+      const ecL = document.getElementById('economyList');
+      ecL.innerHTML = `
+        <div class="flex justify-between items-center bg-[#ffffff05] p-3 rounded"><span class="lbl">Gold Looted</span><span class="val text-sm">${f(p.economy?.goldLooted)}</span></div>
+        <div class="flex justify-between items-center bg-[#ffffff05] p-3 rounded"><span class="lbl">Revives Used</span><span class="val text-sm">${f(p.economy?.revivesUsed)}</span></div>
+        <div class="flex justify-between items-center bg-[#ffffff05] p-3 rounded border border-[#ff2a2a]"><span class="lbl text-[#ff2a2a]">Total Deaths</span><span class="val text-sm text-[#ff2a2a]">${f(p.totalDeaths)}</span></div>
+      `;
+
+      const bL = document.getElementById('badgesList');
+      if(p.badges && p.badges.length) {
+        p.badges.forEach(b => {
+          bL.innerHTML += `
+            <div class="bg-[#ffffff05] p-3 rounded b-${b.type} flex gap-3 items-center">
+              <div class="text-2xl">${b.icon}</div>
+              <div>
+                <div class="text-sm font-bold">${b.name}</div>
+                <div class="text-xs text-[#64748b]">${b.desc}</div>
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        bL.innerHTML = '<div class="text-[#64748b] text-sm">No badges recorded.</div>';
+      }
+    }
+  </script>
+</body>
+</html>
