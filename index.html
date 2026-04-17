@@ -1,1 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doors Global Leaderboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: linear-gradient(180deg, #060a1e 0%, #12172f 100%);
+      color: #eef2ff;
+    }
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    .hero {
+      display: grid;
+      gap: 16px;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(2.4rem, 4vw, 4rem);
+      letter-spacing: -0.04em;
+    }
+    .hero p {
+      margin: 0;
+      color: #c5d4ff;
+      max-width: 760px;
+      justify-self: center;
+      line-height: 1.7;
+    }
+    .board-card {
+      background: rgba(14, 25, 58, 0.92);
+      border: 1px solid rgba(110, 143, 255, 0.16);
+      border-radius: 24px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+      padding: 24px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .controls input,
+    .controls button {
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.95rem;
+    }
+    .controls input {
+      flex: 1 1 220px;
+      background: rgba(226, 232, 255, 0.08);
+      color: #eef2ff;
+      border: 1px solid rgba(226, 232, 255, 0.16);
+    }
+    .controls button {
+      background: #5d7dff;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .controls button:hover {
+      transform: translateY(-1px);
+      background: #4060f9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 560px;
+    }
+    th,
+    td {
+      padding: 16px 12px;
+      text-align: left;
+    }
+    thead th {
+      color: #a5b3ff;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.8rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    tbody td {
+      color: #edf2ff;
+    }
+    .rank {
+      width: 64px;
+      font-weight: 700;
+      color: #f4f7ff;
+    }
+    .player-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(93, 125, 255, 0.18);
+      color: #c5d4ff;
+      font-size: 0.85rem;
+    }
+    .footer {
+      margin-top: 24px;
+      color: #94a3ff;
+      font-size: 0.95rem;
+    }
+    @media (max-width: 720px) {
+      .controls {
+        flex-direction: column;
+      }
+      table {
+        min-width: auto;
+      }
+      th,
+      td {
+        padding: 12px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div>
+        <p>Roblox Doors Global Leaderboard</p>
+        <h1>идерборд лучших игроков Doors</h1>
+      </div>
+      <p>тслеживайте лучшую статистику по игрокам, сортируйте очки и ищите участников. то стартовая версия с примером таблицы, которую можно связать с реальной базой данных Roblox API позже.</p>
+    </section>
 
+    <section class="board-card">
+      <div class="controls">
+        <input id="searchInput" type="search" placeholder="оиск игрока..." aria-label="оиск игрока" />
+        <button id="sortScoreBtn" type="button">Сортировать по очкам v</button>
+      </div>
+
+      <div class="table-wrapper">
+        <table aria-label="лобальный лидерборд Doors">
+          <thead>
+            <tr>
+              <th>есто</th>
+              <th>грок</th>
+              <th>чки</th>
+              <th>рохождение</th>
+              <th>ата</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+      </div>
+      <p class="footer">ример данных можно заменить реальной статистикой через API Roblox или Firebase.</p>
+    </section>
+  </main>
+
+  <script>
+    const players = [
+      { rank: 1, name: 'ShadowRunner', score: 17420, progress: 'льфа', date: '2026-04-16' },
+      { rank: 2, name: 'DoorHunter', score: 16130, progress: 'ризрак', date: '2026-04-16' },
+      { rank: 3, name: 'NightStalker', score: 14950, progress: 'ошмар', date: '2026-04-15' },
+      { rank: 4, name: 'BladeMage', score: 13890, progress: 'аньон', date: '2026-04-15' },
+      { rank: 5, name: 'LunaPick', score: 13100, progress: 'отерянный этаж', date: '2026-04-14' },
+      { rank: 6, name: 'AbyssWalker', score: 12240, progress: 'очной режим', date: '2026-04-14' },
+    ];
+
+    const leaderboardBody = document.getElementById('leaderboardBody');
+    const searchInput = document.getElementById('searchInput');
+    const sortScoreBtn = document.getElementById('sortScoreBtn');
+    let sortDescending = true;
+
+    function renderRows(data) {
+      leaderboardBody.innerHTML = data.map(player => `
+        <tr>
+          <td class="rank">${player.rank}</td>
+          <td>
+            <div class="player-name">
+              <span>${player.name}</span>
+              <span class="badge">${player.progress}</span>
+            </div>
+          </td>
+          <td>${player.score.toLocaleString('ru-RU')}</td>
+          <td>${player.progress}</td>
+          <td>${player.date}</td>
+        </tr>
+      `).join('');
+    }
+
+    function updateLeaderboard() {
+      const query = searchInput.value.trim().toLowerCase();
+      const filtered = players.filter(player => player.name.toLowerCase().includes(query));
+      renderRows(filtered);
+    }
+
+    searchInput.addEventListener('input', updateLeaderboard);
+
+    sortScoreBtn.addEventListener('click', () => {
+      sortDescending = !sortDescending;
+      players.sort((a, b) => sortDescending ? b.score - a.score : a.score - b.score);
+      sortScoreBtn.textContent = sortDescending ? 'Сортировать по очкам v' : 'Сортировать по очкам ^';
+      updateLeaderboard();
+    });
+
+    players.sort((a, b) => b.score - a.score);
+    renderRows(players);
+  </script>
+</body>
+</html>
