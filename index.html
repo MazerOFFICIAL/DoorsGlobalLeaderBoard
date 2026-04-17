@@ -1,679 +1,636 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="bg-[#0F0F0F] text-[#E6E6E6]">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DOORS Player Leaderboard - Top Statistics</title>
+  <title>DOORS Player Rankings | Global Leaderboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root {
-      --bg-dark: #0A0A0A;
-      --bg-brown: #3A2318;
-      --accent-cyan: #00FFFF;
-      --accent-red: #FF0000;
-      --text-light: #FFFFFF;
-      --text-muted: #CCCCCC;
-      --border-color: #2a2f4a;
-      --hover-color: #3a3f5a;
-      --success-color: #4ade80;
-      --danger-color: #ef4444;
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
+    * { font-family: 'Rubik', 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+    
+    .bg-ultra-dark { background-color: #0F0F0F; }
+    .bg-dark-panel { background-color: #1A1A1A; }
+    .bg-content-panel { background-color: #252525; }
+    .border-subtle { border-color: #404040; }
+    .accent-gold { color: #FFD700; }
+    .accent-cyber { color: #00D9FF; }
+    .accent-neon { color: #FF006E; }
+    
+    body { background-color: #0F0F0F; }
+    
+    .nav-bar { 
+      background: linear-gradient(180deg, #1A1A1A 0%, #151515 100%);
+      border-bottom: 2px solid #404040;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Arial', sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-light);
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* Header */
-    .navbar {
-      position: sticky;
-      top: 0;
-      background: rgba(10, 10, 10, 0.8);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--bg-brown);
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .logo {
-      font-family: 'Times New Roman', serif;
-      font-size: 24px;
-      color: var(--accent-red);
-      text-shadow: 0 0 10px var(--accent-red);
-    }
-
-    .nav-links {
-      display: flex;
-      list-style: none;
-    }
-
-    .nav-links li {
-      margin-left: 20px;
-    }
-
-    .nav-links a {
-      color: var(--text-light);
-      text-decoration: none;
-      font-family: 'Arial', sans-serif;
-      transition: color 0.3s;
-    }
-
-    .nav-links a:hover {
-      color: var(--accent-cyan);
-    }
-
-    .search-bar {
-      display: flex;
-      align-items: center;
-    }
-
-    .search-bar input {
-      background: var(--bg-brown);
-      border: 1px solid var(--accent-cyan);
-      color: var(--text-light);
-      padding: 5px 10px;
-      border-radius: 8px;
-      outline: none;
-    }
-
-    .search-bar input:focus {
-      box-shadow: 0 0 5px var(--accent-cyan);
-    }
-
-    .search-bar .icon {
-      margin-left: 10px;
-      color: var(--accent-cyan);
-      cursor: pointer;
-    }
-
-    /* Hero */
-    .hero {
-      background: linear-gradient(135deg, var(--bg-dark), var(--bg-brown));
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
+    
+    .header-hero {
+      background: linear-gradient(135deg, #1A1A1A 0%, #252525 50%, #1A1A1A 100%);
+      border-bottom: 1px solid #404040;
       position: relative;
       overflow: hidden;
     }
-
-    .hero::before {
+    
+    .header-hero::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="%23FFFFFF" opacity="0.1"/></svg>') repeat;
-      animation: dust 20s linear infinite;
+      background: radial-gradient(circle at 20% 50%, rgba(0, 217, 255, 0.05) 0%, transparent 50%);
+      pointer-events: none;
     }
-
-    @keyframes dust {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-100px); }
+    
+    .tab-btn {
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+      position: relative;
     }
-
-    .hero h1 {
-      font-family: 'Times New Roman', serif;
-      font-size: 4rem;
-      color: var(--text-light);
-      text-shadow: 0 0 20px var(--accent-red);
-      z-index: 1;
+    
+    .tab-btn:hover {
+      color: #FFD700;
     }
-
-    .hero p {
-      font-size: 1.5rem;
-      color: var(--text-muted);
-      max-width: 600px;
-      z-index: 1;
-      margin: 20px 0;
+    
+    .tab-btn.active {
+      color: #FFD700;
+      border-bottom-color: #FFD700;
     }
-
-    .cta-button {
-      background: var(--bg-brown);
-      border: 2px solid var(--accent-red);
-      color: var(--text-light);
-      padding: 15px 30px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-size: 1.2rem;
-      transition: all 0.3s;
-      z-index: 1;
-    }
-
-    .cta-button:hover {
-      background: var(--accent-red);
-      box-shadow: 0 0 20px var(--accent-red);
-    }
-
-    /* Summary Cards */
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 40px;
-    }
-
-    .summary-card {
-      background: var(--bg-brown);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .summary-card h3 {
-      font-size: 2rem;
-      color: var(--accent-cyan);
-      margin-bottom: 10px;
-    }
-
-    .summary-card p {
-      color: var(--text-muted);
-    }
-
-    /* Dashboard */
-    .dashboard {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 30px;
-      margin-bottom: 40px;
-    }
-
-    .leaderboard-section {
-      background: var(--bg-brown);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 20px;
-    }
-
-    .profile-section {
-      background: var(--bg-brown);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 20px;
-      position: sticky;
-      top: 100px;
-      height: fit-content;
-    }
-
-    /* Table */
+    
     .leaderboard-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border-radius: 8px;
     }
-
-    .leaderboard-table th,
-    .leaderboard-table td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
+    
+    .table-header {
+      background: linear-gradient(90deg, #1A1A1A, #252525);
+      border-bottom: 2px solid #404040;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
     }
-
-    .leaderboard-table th {
-      background: var(--hover-color);
-      font-weight: bold;
+    
+    .table-row {
+      border-bottom: 1px solid #2A2A2A;
+      transition: all 0.2s ease;
     }
-
-    .leaderboard-table tr:hover {
-      background: var(--hover-color);
+    
+    .table-row:hover {
+      background-color: #303030 !important;
+      box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.05);
     }
-
-    .status-online {
-      color: var(--success-color);
-    }
-
-    .status-offline {
-      color: var(--danger-color);
-    }
-
-    /* Profile */
-    .profile-card {
-      text-align: center;
-    }
-
-    .profile-avatar {
-      width: 100px;
-      height: 100px;
+    
+    .table-row-even { background-color: #1A1A1A; }
+    .table-row-odd { background-color: #202020; }
+    
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      margin-bottom: 15px;
+      font-weight: 700;
+      font-size: 0.9rem;
     }
-
-    .profile-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 20px;
+    
+    .rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; }
+    .rank-2 { background: linear-gradient(135deg, #C0C0C0, #808080); color: #FFF; }
+    .rank-3 { background: linear-gradient(135deg, #CD7F32, #8B4513); color: #FFF; }
+    
+    .stat-badge {
+      display: inline-block;
+      background-color: #2A2A2A;
+      border: 1px solid #404040;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
     }
-
-    .stat-item {
-      background: var(--hover-color);
-      padding: 10px;
-      border-radius: 5px;
-      text-align: center;
+    
+    .stat-positive { color: #00FF00; }
+    .stat-warning { color: #FFD700; }
+    .stat-info { color: #00D9FF; }
+    
+    .player-name {
+      font-weight: 700;
+      color: #FFD700;
+      transition: all 0.2s;
     }
-
-    .stat-item strong {
-      display: block;
-      font-size: 1.2rem;
-      color: var(--accent-cyan);
+    
+    .player-name:hover {
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
     }
-
-    /* Application Form */
-    .application-card {
-      background: var(--bg-brown);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 40px;
+    
+    .stat-box {
+      background: linear-gradient(135deg, #1A1A1A, #252525);
+      border: 1px solid #404040;
+      border-radius: 8px;
+      padding: 16px;
+      transition: all 0.3s;
     }
-
-    .application-card h2 {
-      margin-bottom: 20px;
-      color: var(--accent-cyan);
+    
+    .stat-box:hover {
+      border-color: #FFD700;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
     }
-
-    .form-group {
-      margin-bottom: 15px;
+    
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #FFD700;
     }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
+    
+    .stat-label {
+      font-size: 0.85rem;
+      color: #909090;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 5px;
-      background: var(--bg-dark);
-      color: var(--text-light);
+    
+    .input-field {
+      background-color: #1A1A1A;
+      border: 1px solid #404040;
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: #E6E6E6;
+      transition: all 0.2s;
     }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 80px;
+    
+    .input-field:focus {
+      outline: none;
+      border-color: #FFD700;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
     }
-
-    .submit-btn {
-      background: var(--accent-cyan);
-      color: var(--bg-dark);
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #000;
+      font-weight: 700;
+      padding: 10px 24px;
+      border-radius: 6px;
+      transition: all 0.3s;
       border: none;
-      padding: 12px 24px;
-      border-radius: 5px;
       cursor: pointer;
-      font-size: 16px;
-      transition: background 0.3s;
     }
-
-    .submit-btn:hover {
-      background: #00CCCC;
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
     }
-
-    /* Applications Table */
-    .applications-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
+    
+    .online-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
     }
-
-    .applications-table th,
-    .applications-table td {
-      padding: 10px;
-      border-bottom: 1px solid var(--border-color);
+    
+    .online { background-color: rgba(0, 255, 0, 0.15); color: #00FF00; }
+    .offline { background-color: rgba(255, 100, 100, 0.15); color: #FF6464; }
+    
+    .scroll-container {
+      overflow-x: auto;
+      border-radius: 8px;
     }
-
-    .applications-table th {
-      background: var(--hover-color);
+    
+    ::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
     }
-
-    /* Footer */
-    .footer {
-      background: var(--bg-dark);
-      border-top: 1px solid var(--bg-brown);
-      padding: 20px;
-      text-align: center;
+    
+    ::-webkit-scrollbar-track {
+      background: #1A1A1A;
     }
-
-    .footer a {
-      color: var(--accent-cyan);
-      text-decoration: none;
-      margin: 0 10px;
-      transition: color 0.3s;
+    
+    ::-webkit-scrollbar-thumb {
+      background: #404040;
+      border-radius: 4px;
     }
-
-    .footer a:hover {
-      color: var(--accent-red);
-    }
-
-    .footer p {
-      color: var(--text-muted);
-      margin-top: 10px;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .dashboard {
-        grid-template-columns: 1fr;
-      }
-
-      .navbar {
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .nav-links {
-        margin: 10px 0;
-      }
-
-      .hero h1 {
-        font-size: 2.5rem;
-      }
-
-      .hero p {
-        font-size: 1.2rem;
-      }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #505050;
     }
   </style>
 </head>
-<body>
-  <nav class="navbar">
-    <div class="logo">DOORS TOPS</div>
-    <ul class="nav-links">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#leaderboard">Leaderboard</a></li>
-      <li><a href="#stats">Stats</a></li>
-      <li><a href="#apply">Apply</a></li>
-    </ul>
-    <div class="search-bar">
-      <input type="text" placeholder="Search players...">
-      <div class="icon">🔍</div>
+<body class="bg-ultra-dark">
+  <!-- Navigation Bar -->
+  <nav class="nav-bar sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-8">
+        <h1 class="text-2xl font-bold accent-gold text-2xl tracking-wider">DOORS</h1>
+        <ul class="flex gap-8 text-sm font-600 hidden md:flex">
+          <li><a href="#" class="text-gray-300 hover:text-yellow-500 transition">Rankings</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-yellow-500 transition">Statistics</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-yellow-500 transition">Apply</a></li>
+        </ul>
+      </div>
+      <div class="flex items-center gap-4">
+        <input type="text" id="globalSearch" placeholder="Search players..." class="input-field w-48 hidden md:block" />
+      </div>
     </div>
   </nav>
 
-  <section id="home" class="hero">
-    <h1>Survive. Study the Best.</h1>
-    <p>Discover the top players in Roblox DOORS. View statistics, achievements, and join the community!</p>
-    <a href="#leaderboard" class="cta-button">View Top Players</a>
-  </section>
+  <!-- Header Hero -->
+  <header class="header-hero py-12 relative">
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div class="mb-2">
+        <span class="inline-block accent-cyber text-sm font-700 tracking-widest">GLOBAL LEADERBOARD</span>
+      </div>
+      <h2 class="text-5xl font-bold text-white mb-3">Player Rankings</h2>
+      <p class="text-gray-400 max-w-2xl">Elite rankings determined by comprehensive performance analysis including score, doors cleared, wins, runs completed, and strategic achievements.</p>
+    </div>
+  </header>
 
-  <div class="container">
-    <div class="summary-grid">
-      <div class="summary-card">
-        <h3 id="total-players">7</h3>
-        <p>Players in Top</p>
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
+      <div class="stat-box">
+        <div class="stat-label mb-2">Total Players</div>
+        <div class="stat-value" id="total-players">0</div>
       </div>
-      <div class="summary-card">
-        <h3 id="online-players">3</h3>
-        <p>Online Now</p>
+      <div class="stat-box">
+        <div class="stat-label mb-2">Online Now</div>
+        <div class="stat-value" id="online-count">0</div>
       </div>
-      <div class="summary-card">
-        <h3 id="pending-apps">0</h3>
-        <p>Applications Pending</p>
+      <div class="stat-box">
+        <div class="stat-label mb-2">Total Wins</div>
+        <div class="stat-value" id="total-wins">0</div>
       </div>
-      <div class="summary-card">
-        <h3 id="total-wins">196</h3>
-        <p>Total Wins</p>
+      <div class="stat-box">
+        <div class="stat-label mb-2">Avg Doors Cleared</div>
+        <div class="stat-value" id="avg-doors">0</div>
       </div>
     </div>
 
-    <div class="dashboard">
-      <div class="leaderboard-section">
-        <h2>Player Leaderboard</h2>
-        <div class="search-container" style="margin-bottom: 20px;">
-          <input type="text" id="search-input" class="search-input" placeholder="Search players..." style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--bg-dark); color: var(--text-light);">
-        </div>
-        <table class="leaderboard-table" id="leaderboard-table">
+    <!-- Leaderboard Tabs -->
+    <div class="bg-dark-panel border border-subtle rounded-lg overflow-hidden mb-8">
+      <div class="flex overflow-x-auto border-b border-subtle">
+        <button class="tab-btn px-6 py-4 whitespace-nowrap active transition-all text-sm font-600" data-tab="overall">⭐ Overall Ranking</button>
+        <button class="tab-btn px-6 py-4 whitespace-nowrap transition-all text-sm font-600" data-tab="score">📊 By Score</button>
+        <button class="tab-btn px-6 py-4 whitespace-nowrap transition-all text-sm font-600" data-tab="doors">🚪 By Doors Cleared</button>
+        <button class="tab-btn px-6 py-4 whitespace-nowrap transition-all text-sm font-600" data-tab="wins">🏆 By Wins</button>
+        <button class="tab-btn px-6 py-4 whitespace-nowrap transition-all text-sm font-600" data-tab="runs">🏃 By Runs</button>
+        <button class="tab-btn px-6 py-4 whitespace-nowrap transition-all text-sm font-600" data-tab="achievements">🎯 By Achievements</button>
+        <button class="tab-btn px-6 py-4 whitespace-nowrap transition-all text-sm font-600" data-tab="items">📦 By Items</button>
+      </div>
+
+      <!-- Leaderboard Table -->
+      <div class="scroll-container">
+        <table class="leaderboard-table w-full text-sm">
           <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Name</th>
-              <th>Score</th>
-              <th>Progress</th>
-              <th>Status</th>
-              <th>Region</th>
+            <tr class="table-header">
+              <th class="p-4 text-left">Rank</th>
+              <th class="p-4 text-left">Player</th>
+              <th class="p-4 text-center" id="header-col-1">Score</th>
+              <th class="p-4 text-center" id="header-col-2">Doors</th>
+              <th class="p-4 text-center" id="header-col-3">Wins</th>
+              <th class="p-4 text-center" id="header-col-4">Runs</th>
+              <th class="p-4 text-center" id="header-col-5">Status</th>
             </tr>
           </thead>
           <tbody id="leaderboard-body">
-            <!-- Data will be loaded by JavaScript -->
           </tbody>
         </table>
       </div>
+    </div>
 
-      <div class="profile-section">
-        <div class="profile-card" id="profile-card">
-          <h3>Select a Player</h3>
-          <p>Click on a row in the table to view the profile</p>
+    <!-- Bottom Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Apply Form -->
+      <div class="bg-dark-panel border border-subtle rounded-lg p-8">
+        <h3 class="text-2xl font-bold mb-6">Apply to Rankings</h3>
+        <form id="application-form" class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <input type="text" id="app-nick" placeholder="Nickname" class="input-field" required />
+            <input type="number" id="app-score" placeholder="Score" class="input-field" required />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <input type="number" id="app-doors" placeholder="Doors Cleared" class="input-field" required />
+            <input type="number" id="app-runs" placeholder="Total Runs" class="input-field" required />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <input type="text" id="app-region" placeholder="Region" class="input-field" required />
+            <select id="app-status" class="input-field" required>
+              <option value="">Select Status</option>
+              <option value="Online">Online</option>
+              <option value="Offline">Offline</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary w-full">Submit Application</button>
+        </form>
+      </div>
+
+      <!-- Recent Applications -->
+      <div class="bg-dark-panel border border-subtle rounded-lg p-8">
+        <h3 class="text-2xl font-bold mb-6">Recent Applications</h3>
+        <div id="recent-apps" class="space-y-3 max-h-80 overflow-y-auto">
+          <p class="text-gray-500 text-center py-8">No applications yet</p>
         </div>
       </div>
     </div>
-
-    <div class="application-card">
-      <h2>Apply for Leaderboard</h2>
-      <form id="application-form">
-        <div class="form-group">
-          <label for="app-nick">Nickname:</label>
-          <input type="text" id="app-nick" required>
-        </div>
-        <div class="form-group">
-          <label for="app-score">Score:</label>
-          <input type="number" id="app-score" required>
-        </div>
-        <div class="form-group">
-          <label for="app-progress">Progress:</label>
-          <input type="text" id="app-progress" required>
-        </div>
-        <div class="form-group">
-          <label for="app-status">Status:</label>
-          <select id="app-status" required>
-            <option value="Online">Online</option>
-            <option value="Offline">Offline</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="app-location">Location:</label>
-          <input type="text" id="app-location" required>
-        </div>
-        <div class="form-group">
-          <label for="app-region">Region:</label>
-          <input type="text" id="app-region" required>
-        </div>
-        <div class="form-group">
-          <label for="app-doors">Doors Cleared:</label>
-          <input type="number" id="app-doors" required>
-        </div>
-        <div class="form-group">
-          <label for="app-runs">Total Runs:</label>
-          <input type="number" id="app-runs" required>
-        </div>
-        <div class="form-group">
-          <label for="app-weapon">Favorite Weapon:</label>
-          <input type="text" id="app-weapon" required>
-        </div>
-        <div class="form-group">
-          <label for="app-notes">Notes:</label>
-          <textarea id="app-notes"></textarea>
-        </div>
-        <button type="submit" class="submit-btn">Submit Application</button>
-      </form>
-
-      <h3>Applications Pending Review</h3>
-      <table class="applications-table" id="applications-table">
-        <thead>
-          <tr>
-            <th>Nick</th>
-            <th>Score</th>
-            <th>Status</th>
-            <th>Doors</th>
-            <th>Runs</th>
-          </tr>
-        </thead>
-        <tbody id="applications-body">
-          <!-- Applications will be loaded from localStorage -->
-        </tbody>
-      </table>
-    </div>
   </div>
-
-  <footer class="footer">
-    <a href="https://doors.fandom.com">DOORS Wiki</a>
-    <a href="https://discord.gg/doors">Discord</a>
-    <p>Not affiliated with LSPLASH. Fan-made project.</p>
-  </footer>
-
   <script src="playersdata.js"></script>
   <script>
-    // Load data
-    let currentPlayer = null;
-    let filteredPlayers = [...playersData];
+    // =============== RANKING ALGORITHM ===============
+    
+    const STAT_KEYS = {
+      score: { label: 'Score', weight: 0.25 },
+      doorsCleared: { label: 'Doors Cleared', weight: 0.2 },
+      totalWins: { label: 'Total Wins', weight: 0.2 },
+      totalRuns: { label: 'Total Runs', weight: 0.15 },
+      achievementsUnlocked: { label: 'Achievements', weight: 0.1 },
+      itemsCollected: { label: 'Items Collected', weight: 0.1 }
+    };
 
-    // Render leaderboard table
-    function renderLeaderboard() {
+    class RankingSystem {
+      constructor(players) {
+        this.players = JSON.parse(JSON.stringify(players));
+        this.normalize();
+        this.calculateOverallRanking();
+      }
+
+      normalize() {
+        const normalized = {};
+        
+        for (const key in STAT_KEYS) {
+          const values = this.players.map(p => p[key] || 0).filter(v => v > 0);
+          const max = Math.max(...values, 1);
+          normalized[key] = { max };
+        }
+
+        this.players = this.players.map(player => {
+          const normalized_scores = {};
+          for (const key in STAT_KEYS) {
+            const value = player[key] || 0;
+            const max = normalized[key].max;
+            normalized_scores[key] = max > 0 ? (value / max) * 100 : 0;
+          }
+          return { ...player, normalized_scores };
+        });
+      }
+
+      calculateOverallRanking() {
+        this.players.forEach(player => {
+          let overallScore = 0;
+          for (const key in STAT_KEYS) {
+            const weight = STAT_KEYS[key].weight;
+            const score = player.normalized_scores[key] || 0;
+            overallScore += (score * weight);
+          }
+          player.overallRank = overallScore;
+        });
+      }
+
+      getRankingByKey(key) {
+        return [...this.players].sort((a, b) => (b[key] || 0) - (a[key] || 0));
+      }
+
+      getOverallRanking() {
+        return [...this.players].sort((a, b) => b.overallRank - a.overallRank);
+      }
+    }
+
+    let rankingSystem = new RankingSystem(playersData);
+    let currentTab = 'overall';
+    let currentData = rankingSystem.getOverallRanking();
+
+    // =============== UI FUNCTIONS ===============
+
+    function updateStats() {
+      document.getElementById('total-players').textContent = playersData.length;
+      document.getElementById('online-count').textContent = playersData.filter(p => p.status === 'Online').length;
+      document.getElementById('total-wins').textContent = playersData.reduce((sum, p) => sum + (p.totalWins || 0), 0);
+      const avgDoors = Math.round(playersData.reduce((sum, p) => sum + (p.doorsCleared || 0), 0) / playersData.length);
+      document.getElementById('avg-doors').textContent = avgDoors || 0;
+    }
+
+    function createRankBadge(rank) {
+      if (rank === 1) return `<div class="rank-badge rank-1">${rank}</div>`;
+      if (rank === 2) return `<div class="rank-badge rank-2">${rank}</div>`;
+      if (rank === 3) return `<div class="rank-badge rank-3">${rank}</div>`;
+      return `<div class="rank-badge" style="background-color: #404040; color: #FFD700;">${rank}</div>`;
+    }
+
+    function renderLeaderboard(data, sortKey = 'overall') {
       const tbody = document.getElementById('leaderboard-body');
       tbody.innerHTML = '';
 
-      filteredPlayers.forEach(player => {
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-gray-500">No players data</td></tr>';
+        return;
+      }
+
+      data.forEach((player, index) => {
+        const rank = index + 1;
+        const bgClass = index % 2 === 0 ? 'table-row-even' : 'table-row-odd';
+        const isOnline = player.status === 'Online';
+        
+        let col1 = '', col2 = '', col3 = '', col4 = '', col5 = '';
+        
+        if (sortKey === 'overall') {
+          col1 = `${player.score}`;
+          col2 = `${player.doorsCleared}`;
+          col3 = `${player.totalWins}`;
+          col4 = `${player.totalRuns}`;
+          col5 = player.overallRank ? player.overallRank.toFixed(1) : '0';
+        } else if (sortKey === 'score') {
+          col1 = `${player.score}`;
+          col2 = `${player.doorsCleared}`;
+          col3 = `${player.totalWins}`;
+          col4 = `${player.totalRuns}`;
+          col5 = player.score;
+        } else if (sortKey === 'doors') {
+          col1 = `${player.doorsCleared}`;
+          col2 = `${player.score}`;
+          col3 = `${player.totalWins}`;
+          col4 = `${player.totalRuns}`;
+          col5 = player.doorsCleared;
+        } else if (sortKey === 'wins') {
+          col1 = `${player.totalWins}`;
+          col2 = `${player.score}`;
+          col3 = `${player.doorsCleared}`;
+          col4 = `${player.totalRuns}`;
+          col5 = player.totalWins;
+        } else if (sortKey === 'runs') {
+          col1 = `${player.totalRuns}`;
+          col2 = `${player.score}`;
+          col3 = `${player.doorsCleared}`;
+          col4 = `${player.totalWins}`;
+          col5 = player.totalRuns;
+        } else if (sortKey === 'achievements') {
+          col1 = `${player.achievementsUnlocked || 0}`;
+          col2 = `${player.score}`;
+          col3 = `${player.doorsCleared}`;
+          col4 = `${player.totalWins}`;
+          col5 = player.achievementsUnlocked || 0;
+        } else if (sortKey === 'items') {
+          col1 = `${player.itemsCollected || 0}`;
+          col2 = `${player.score}`;
+          col3 = `${player.doorsCleared}`;
+          col4 = `${player.totalWins}`;
+          col5 = player.itemsCollected || 0;
+        }
+
         const row = document.createElement('tr');
+        row.className = `table-row ${bgClass}`;
         row.innerHTML = `
-          <td>${player.rank}</td>
-          <td>${player.name}</td>
-          <td>${player.score.toLocaleString()}</td>
-          <td>${player.progress}</td>
-          <td class="${player.status === 'Online' ? 'status-online' : 'status-offline'}">${player.status}</td>
-          <td>${player.region}</td>
+          <td class="p-4">${createRankBadge(rank)}</td>
+          <td class="p-4">
+            <div class="player-name">${player.name}</div>
+            <div class="text-gray-500 text-xs">${player.region || 'N/A'}</div>
+          </td>
+          <td class="p-4 text-center">${col1}</td>
+          <td class="p-4 text-center">${col2}</td>
+          <td class="p-4 text-center">${col3}</td>
+          <td class="p-4 text-center">${col4}</td>
+          <td class="p-4 text-center">
+            <span class="online-indicator ${isOnline ? 'online' : 'offline'}">
+              ${isOnline ? '● Online' : '○ Offline'}
+            </span>
+          </td>
         `;
-        row.addEventListener('click', () => showProfile(player));
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', () => showPlayerDetail(player));
         tbody.appendChild(row);
       });
     }
 
-    // Show profile
-    function showProfile(player) {
-      currentPlayer = player;
-      const profileCard = document.getElementById('profile-card');
-      profileCard.innerHTML = `
-        <img src="${player.avatarUrl}" alt="${player.name}" class="profile-avatar">
-        <h3>${player.name}</h3>
-        <p>${player.notes}</p>
-        <div class="profile-stats">
-          <div class="stat-item"><strong>${player.totalWins}</strong><br>Wins</div>
-          <div class="stat-item"><strong>${player.doorsCleared}</strong><br>Doors</div>
-          <div class="stat-item"><strong>${player.totalRuns}</strong><br>Runs</div>
-          <div class="stat-item"><strong>${player.achievementsUnlocked}</strong><br>Achievements</div>
-          <div class="stat-item"><strong>${player.knobsEarned.toLocaleString()}</strong><br>Knobs</div>
-          <div class="stat-item"><strong>${player.itemsCollected}</strong><br>Items</div>
-        </div>
-        <div style="margin-top: 20px; text-align: left;">
-          <h4>Wins by Floor:</h4>
-          <p>Hotel: ${player.winsHotel} | Mines: ${player.winsMines} | Backdoor: ${player.winsBackdoor} | Rooms: ${player.winsRooms} | Outdoors: ${player.winsOutdoors}</p>
-          <p>Best Run: ${player.bestRun}</p>
-          <p>Favorite Weapon: ${player.favoriteWeapon}</p>
-        </div>
-      `;
+    function showPlayerDetail(player) {
+      alert(`
+Player: ${player.name}
+Region: ${player.region}
+Status: ${player.status}
+
+=== STATISTICS ===
+Score: ${player.score}
+Doors Cleared: ${player.doorsCleared}
+Total Wins: ${player.totalWins}
+Total Runs: ${player.totalRuns}
+Achievements: ${player.achievementsUnlocked || 0}
+Items Collected: ${player.itemsCollected || 0}
+
+=== WINS BREAKDOWN ===
+Hotel: ${player.winsHotel || 0} | Mines: ${player.winsMines || 0} | Backdoor: ${player.winsBackdoor || 0}
+      `);
     }
 
-    // Search
-    document.getElementById('search-input').addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      filteredPlayers = playersData.filter(player =>
-        player.name.toLowerCase().includes(query) ||
-        player.region.toLowerCase().includes(query) ||
-        player.progress.toLowerCase().includes(query)
-      );
-      renderLeaderboard();
+    function updateTableHeaders(tab) {
+      const headers = {
+        overall: ['Score', 'Doors', 'Wins', 'Runs', 'Overall'],
+        score: ['Score', 'Doors', 'Wins', 'Runs', 'Total Score'],
+        doors: ['Doors', 'Score', 'Wins', 'Runs', 'Doors Cleared'],
+        wins: ['Wins', 'Score', 'Doors', 'Runs', 'Total Wins'],
+        runs: ['Runs', 'Score', 'Doors', 'Wins', 'Total Runs'],
+        achievements: ['Achievements', 'Score', 'Doors', 'Wins', 'Unlocked'],
+        items: ['Items', 'Score', 'Doors', 'Wins', 'Collected']
+      };
+      
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById(`header-col-${i}`).textContent = headers[tab]?.[i - 1] || 'N/A';
+      }
+    }
+
+    // =============== EVENT LISTENERS ===============
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        currentTab = btn.dataset.tab;
+        
+        if (currentTab === 'overall') {
+          currentData = rankingSystem.getOverallRanking();
+          renderLeaderboard(currentData, 'overall');
+        } else {
+          const key = {
+            score: 'score',
+            doors: 'doorsCleared',
+            wins: 'totalWins',
+            runs: 'totalRuns',
+            achievements: 'achievementsUnlocked',
+            items: 'itemsCollected'
+          }[currentTab];
+          
+          currentData = rankingSystem.getRankingByKey(key);
+          renderLeaderboard(currentData, key);
+        }
+        
+        updateTableHeaders(currentTab);
+      });
     });
 
-    // Application form
+    document.getElementById('globalSearch').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      const filtered = currentData.filter(p => p.name.toLowerCase().includes(query));
+      renderLeaderboard(filtered, currentTab);
+    });
+
     document.getElementById('application-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      const formData = new FormData(e.target);
-      const application = {
-        nick: formData.get('app-nick'),
-        score: parseInt(formData.get('app-score')),
-        progress: formData.get('app-progress'),
-        status: formData.get('app-status'),
-        location: formData.get('app-location'),
-        region: formData.get('app-region'),
-        doors: parseInt(formData.get('app-doors')),
-        runs: parseInt(formData.get('app-runs')),
-        weapon: formData.get('app-weapon'),
-        notes: formData.get('app-notes'),
+      
+      const app = {
+        nick: document.getElementById('app-nick').value,
+        score: parseInt(document.getElementById('app-score').value),
+        doors: parseInt(document.getElementById('app-doors').value),
+        runs: parseInt(document.getElementById('app-runs').value),
+        region: document.getElementById('app-region').value,
+        status: document.getElementById('app-status').value,
         timestamp: new Date().toISOString()
       };
 
-      // Save to localStorage
-      const applications = JSON.parse(localStorage.getItem('applications') || '[]');
-      applications.push(application);
-      localStorage.setItem('applications', JSON.stringify(applications));
-
-      // Clear form
+      const apps = JSON.parse(localStorage.getItem('applications') || '[]');
+      apps.push(app);
+      localStorage.setItem('applications', JSON.stringify(apps));
+      
       e.target.reset();
-
-      // Update applications table
-      renderApplications();
-
-      // Update summary
-      updateSummary();
+      renderRecentApps();
+      alert('✓ Application submitted successfully!');
     });
 
-    // Render applications
-    function renderApplications() {
-      const applications = JSON.parse(localStorage.getItem('applications') || '[]');
-      const tbody = document.getElementById('applications-body');
-      tbody.innerHTML = '';
+    function renderRecentApps() {
+      const apps = JSON.parse(localStorage.getItem('applications') || '[]');
+      const container = document.getElementById('recent-apps');
+      container.innerHTML = '';
+      
+      if (apps.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center py-8">No applications yet</p>';
+        return;
+      }
 
-      applications.forEach(app => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${app.nick}</td>
-          <td>${app.score.toLocaleString()}</td>
-          <td>${app.status}</td>
-          <td>${app.doors}</td>
-          <td>${app.runs}</td>
+      apps.slice(-10).reverse().forEach(app => {
+        const div = document.createElement('div');
+        div.className = 'bg-content-panel border border-subtle rounded p-4';
+        div.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="font-bold accent-gold">${app.nick}</p>
+              <p class="text-xs text-gray-500">${app.region}</p>
+            </div>
+            <p class="text-sm font-600">Score: <span class="accent-cyber">${app.score}</span></p>
+          </div>
+          <p class="text-xs text-gray-500 mt-2">${new Date(app.timestamp).toLocaleDateString()}</p>
         `;
-        tbody.appendChild(row);
+        container.appendChild(div);
       });
     }
 
-    // Update summary
-    function updateSummary() {
-      const applications = JSON.parse(localStorage.getItem('applications') || '[]');
-      document.getElementById('pending-apps').textContent = applications.length;
-
-      const onlinePlayers = playersData.filter(p => p.status === 'Online').length;
-      document.getElementById('online-players').textContent = onlinePlayers;
-
-      const totalWins = playersData.reduce((sum, p) => sum + p.totalWins, 0);
-      document.getElementById('total-wins').textContent = totalWins;
-    }
-
-    // Initialize
-    renderLeaderboard();
-    renderApplications();
-    updateSummary();
+    // =============== INITIALIZATION ===============
+    
+    window.addEventListener('load', () => {
+      updateStats();
+      renderLeaderboard(currentData, 'overall');
+      renderRecentApps();
+    });
   </script>
 </body>
 </html>
