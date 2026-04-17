@@ -3,568 +3,476 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DOORS GLOBAL LEADERBOARD</title>
+  <title>DOORS Pro Leaderboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
-    * { font-family: 'Rubik', sans-serif; }
-    
+    :root {
+      --bg-dark: #050505;
+      --bg-panel: #0a0a0c;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --gold: #FFD700;
+      --silver: #E3E4E5;
+      --bronze: #CD7F32;
+      --accent: #00F0FF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      background: #0F0F0F;
-      color: #E6E6E6;
+      background-color: var(--bg-dark);
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background-image: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.03) 0%, transparent 50%);
     }
 
-    .header {
-      background: linear-gradient(180deg, #1A1A1A 0%, #151515 100%);
-      border-bottom: 2px solid #FFD700;
-      box-shadow: 0 8px 32px rgba(255, 215, 0, 0.1);
-      padding: 24px 0;
+    h1, h2, h3, .rank-number {
+      font-family: 'Rajdhani', sans-serif;
     }
 
-    .header h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #FFD700;
-      letter-spacing: 2px;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    .glass-nav {
+      background: rgba(5, 5, 5, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
 
-    .header p {
-      color: #00FFFF;
-      font-size: 0.9rem;
-      margin-top: 8px;
+    .search-box, .sort-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      color: white;
+      transition: all 0.2s ease;
     }
 
-    .controls {
-      display: flex;
-      gap: 16px;
-      margin: 24px 0;
-      flex-wrap: wrap;
-    }
-
-    .search-input {
-      flex: 1;
-      min-width: 250px;
-      background: #1A1A1A;
-      border: 1px solid #404040;
-      border-radius: 8px;
-      padding: 12px 16px;
-      color: #E6E6E6;
-      transition: all 0.3s;
-    }
-
-    .search-input:focus {
+    .search-box:focus, .sort-box:focus {
       outline: none;
-      border-color: #FFD700;
-      box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+      border-color: var(--accent);
+      background: rgba(0, 240, 255, 0.02);
     }
 
-    .sort-select {
-      background: #1A1A1A;
-      border: 1px solid #404040;
-      border-radius: 8px;
-      padding: 12px 16px;
-      color: #E6E6E6;
-      cursor: pointer;
-      transition: all 0.3s;
-      min-width: 200px;
-    }
-
-    .sort-select:focus {
-      outline: none;
-      border-color: #FFD700;
-      box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
-    }
-
-    .players-container {
+    /* Podium Styles */
+    .podium-container {
       display: grid;
-      gap: 16px;
-      margin-top: 24px;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 1.5rem;
+      align-items: flex-end;
+      margin-bottom: 3rem;
+      padding-top: 2rem;
     }
 
-    .player-card {
-      background: linear-gradient(135deg, #1A1A1A 0%, #252525 100%);
-      border: 1px solid #404040;
-      border-radius: 12px;
-      overflow: hidden;
-      transition: all 0.3s;
+    .podium-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       cursor: pointer;
     }
 
-    .player-card:hover {
-      border-color: #FFD700;
-      box-shadow: 0 8px 24px rgba(255, 215, 0, 0.15);
-      transform: translateY(-2px);
+    .podium-card:hover {
+      transform: translateY(-5px);
     }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px;
-      background: linear-gradient(90deg, #252525 0%, #1A1A1A 100%);
-      border-bottom: 1px solid #404040;
+    .podium-1 {
+      border-color: rgba(255, 215, 0, 0.3);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.05);
+      height: 100%;
     }
+    
+    .podium-1 .rank-badge { background: linear-gradient(135deg, #FFDF00, #D4AF37); color: #000; box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
+    .podium-2 .rank-badge { background: linear-gradient(135deg, #F8F9FA, #B0B3B8); color: #000; }
+    .podium-3 .rank-badge { background: linear-gradient(135deg, #E69D5B, #A0522D); color: #fff; }
 
     .rank-badge {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      font-size: 1.25rem;
+      font-size: 1.8rem;
       font-weight: 700;
-      color: #fff;
+      font-family: 'Rajdhani', sans-serif;
+      margin-top: -45px;
+      margin-bottom: 1rem;
+      border: 4px solid var(--bg-dark);
     }
 
-    .rank-1 {
-      background: linear-gradient(135deg, #FFD700, #FFA500);
-      color: #000;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-    }
-
-    .rank-2 {
-      background: linear-gradient(135deg, #C0C0C0, #808080);
-      color: #000;
-      box-shadow: 0 0 16px rgba(192, 192, 192, 0.3);
-    }
-
-    .rank-3 {
-      background: linear-gradient(135deg, #CD7F32, #8B4513);
-      color: #fff;
-      box-shadow: 0 0 16px rgba(205, 127, 50, 0.3);
-    }
-
-    .rank-other {
-      background: linear-gradient(135deg, #404040, #303030);
-      color: #FFD700;
-    }
-
-    .player-info {
-      flex: 1;
-      margin-left: 24px;
-    }
-
-    .player-name {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #FFD700;
-      margin-bottom: 4px;
-    }
-
-    .player-meta {
-      display: flex;
-      gap: 16px;
-      font-size: 0.85rem;
-      color: #909090;
-    }
-
-    .player-stat {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .overall-score {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #00FFFF;
-      text-align: center;
-    }
-
-    .overall-label {
-      font-size: 0.75rem;
-      color: #909090;
-      text-align: center;
-      margin-top: 4px;
-    }
-
-    .card-body {
-      padding: 20px;
-      display: none;
-    }
-
-    .card-body.expanded {
-      display: block;
-      animation: expandIn 0.3s ease-out;
-    }
-
-    @keyframes expandIn {
-      from {
-        opacity: 0;
-        max-height: 0;
-      }
-      to {
-        opacity: 1;
-        max-height: 1000px;
-      }
-    }
-
-    .stat-grid {
+    /* List Styles */
+    .list-header {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
+      grid-template-columns: 80px 2fr 1fr 1fr 1fr 40px;
+      padding: 1rem 1.5rem;
+      color: #8b949e;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-color);
     }
 
-    .stat-item {
-      background: #0F0F0F;
-      border: 1px solid #404040;
-      border-radius: 8px;
-      padding: 12px;
-      text-align: center;
+    .list-row {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.2s ease;
+      overflow: hidden;
     }
 
-    .stat-item-value {
+    .list-row:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .list-row-main {
+      display: grid;
+      grid-template-columns: 80px 2fr 1fr 1fr 1fr 40px;
+      padding: 1.25rem 1.5rem;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .list-rank {
+      font-family: 'Rajdhani', sans-serif;
       font-size: 1.5rem;
       font-weight: 700;
-      color: #FFD700;
+      color: #6e7681;
     }
 
-    .stat-item-label {
-      font-size: 0.75rem;
-      color: #909090;
-      margin-top: 4px;
-      text-transform: uppercase;
-    }
-
-    .section-title {
-      font-size: 0.95rem;
+    .stat-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.2rem;
       font-weight: 600;
-      color: #00FFFF;
-      margin: 16px 0 8px 0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
     }
 
-    .details-grid {
+    .stat-label {
+      font-size: 0.75rem;
+      color: #8b949e;
+    }
+
+    /* Expandable Details */
+    .details-panel {
+      max-height: 0;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      background: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid transparent;
+    }
+
+    .list-row.active .details-panel, .podium-card.active .details-panel {
+      max-height: 800px;
+      opacity: 1;
+      border-top-color: var(--border-color);
+      padding: 1.5rem;
+    }
+
+    .podium-card .details-panel {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      z-index: 10;
+      margin-top: 0.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      text-align: left;
+    }
+
+    .grid-stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 8px;
+      gap: 1rem;
     }
 
-    .detail-badge {
-      background: #0F0F0F;
-      border: 1px solid #404040;
-      border-radius: 6px;
-      padding: 8px;
-      text-align: center;
-      font-size: 0.8rem;
+    .micro-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem;
     }
 
-    .detail-badge-value {
-      font-size: 1.1rem;
+    .micro-value {
+      color: var(--accent);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: #00FFFF;
+      line-height: 1.1;
     }
 
-    .detail-badge-label {
+    .micro-label {
+      font-size: 0.65rem;
+      color: #8b949e;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .section-tag {
+      display: inline-block;
       font-size: 0.7rem;
-      color: #909090;
-      margin-top: 2px;
+      padding: 0.25rem 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 100px;
+      color: #e2e8f0;
+      margin: 1.5rem 0 0.75rem 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    .toggle-btn {
-      background: linear-gradient(135deg, #FFD700, #FFA500);
-      color: #000;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 20px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-size: 0.9rem;
+    .chevron {
+      transition: transform 0.3s ease;
+      color: #8b949e;
     }
 
-    .toggle-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    .list-row.active .chevron {
+      transform: rotate(180deg);
     }
 
-    .toggle-section {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 16px;
-      border-top: 1px solid #404040;
-    }
-
-    .no-players {
-      text-align: center;
-      padding: 48px 20px;
-      color: #909090;
+    @media (max-width: 768px) {
+      .podium-container {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .podium-1 { order: -1; }
+      .list-header { display: none; }
+      .list-row-main {
+        grid-template-columns: 50px 1fr 40px;
+        gap: 1rem;
+      }
+      .hide-mobile { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="max-w-6xl mx-auto px-4 py-8">
-    <!-- Header -->
-    <div class="header">
-      <div class="text-center">
-        <h1>🚪 DOORS GLOBAL LEADERBOARD 🏆</h1>
-        <p>Intelligent Ranking System | DOORS Player Rankings</p>
+
+  <nav class="glass-nav py-4">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-xl font-['Rajdhani']">D</div>
+        <div>
+          <h1 class="text-2xl font-bold tracking-wide text-white leading-tight">DOORS PRO</h1>
+          <p class="text-xs text-cyan-400 tracking-widest uppercase">Global Intel Network</p>
+        </div>
+      </div>
+      
+      <div class="flex w-full md:w-auto gap-3">
+        <input type="text" id="searchInput" class="search-box px-4 py-2 rounded-lg w-full md:w-64 text-sm" placeholder="Search operative...">
+        <select id="sortSelect" class="sort-box px-4 py-2 rounded-lg text-sm cursor-pointer">
+          <option value="overall">Rating</option>
+          <option value="wins">Wins</option>
+          <option value="hours">Hours</option>
+          <option value="deaths">Deaths</option>
+          <option value="knobs">Knobs</option>
+        </select>
       </div>
     </div>
+  </nav>
 
-    <!-- Controls -->
-    <div class="controls">
-      <input type="text" id="searchInput" class="search-input" placeholder="Search player by name...">
-      <select id="sortSelect" class="sort-select">
-        <option value="overall">Sort: Overall Score</option>
-        <option value="wins">Sort: Total Wins</option>
-        <option value="hours">Sort: Hours Played</option>
-        <option value="deaths">Sort: Total Deaths</option>
-        <option value="knobs">Sort: Total Knobs</option>
-      </select>
+  <main class="max-w-7xl mx-auto px-6 py-10">
+    <div id="podiumArea" class="podium-container"></div>
+    
+    <div id="listArea" class="mt-8">
+      <div class="list-header hide-mobile">
+        <div>Rank</div>
+        <div>Operative</div>
+        <div>Overall Rating</div>
+        <div>Total Wins</div>
+        <div>Hours Logged</div>
+        <div></div>
+      </div>
+      <div id="playersList"></div>
     </div>
-
-    <!-- Players Container -->
-    <div class="players-container" id="playersContainer">
-      <div class="no-players">Loading players...</div>
-    </div>
-  </div>
+  </main>
 
   <script src="playersdata.js"></script>
   <script>
-    // Format numbers with K/M notation
-    function formatNumber(num) {
-      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-      return num.toLocaleString();
+    function fn(n) {
+      if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+      if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+      return n.toLocaleString();
     }
 
-    // Calculate overall score
-    function calculateOverallScore(player) {
-      const maxMetrics = {
-        wins: Math.max(...playersData.map(p => p.totalWins || 0)),
-        knobs: Math.max(...playersData.map(p => p.totalKnobs || 0)),
-        deaths: Math.max(...playersData.map(p => p.totalDeaths || 0)),
-        hours: Math.max(...playersData.map(p => p.hoursPlayed || 0)),
-        badges: Math.max(...playersData.map(p => (p.doorsTotal || 0) + (p.hdBadges || 0) + (p.ghostHuntBadges || 0) + (p.findApplesBadges || 0))),
-        revives: Math.max(...playersData.map(p => p.totalRevives || 0))
+    function calc(p) {
+      const m = {
+        w: Math.max(...playersData.map(x => x.totalWins || 0)),
+        k: Math.max(...playersData.map(x => x.totalKnobs || 0)),
+        d: Math.max(...playersData.map(x => x.totalDeaths || 0)),
+        h: Math.max(...playersData.map(x => x.hoursPlayed || 0)),
+        b: Math.max(...playersData.map(x => (x.doorsTotal || 0) + (x.hdBadges || 0) + (x.ghostHuntBadges || 0) + (x.findApplesBadges || 0))),
+        r: Math.max(...playersData.map(x => x.totalRevives || 0))
       };
-
-      const scores = {
-        wins: ((player.totalWins || 0) / (maxMetrics.wins || 1)) * 100,
-        knobs: ((player.totalKnobs || 0) / (maxMetrics.knobs || 1)) * 100,
-        deaths: ((player.totalDeaths || 0) / (maxMetrics.deaths || 1)) * 100,
-        hours: ((player.hoursPlayed || 0) / (maxMetrics.hours || 1)) * 100,
-        badges: (((player.doorsTotal || 0) + (player.hdBadges || 0) + (player.ghostHuntBadges || 0) + (player.findApplesBadges || 0)) / (maxMetrics.badges || 1)) * 100,
-        revives: ((player.totalRevives || 0) / (maxMetrics.revives || 1)) * 100
+      const s = {
+        w: ((p.totalWins || 0) / (m.w || 1)) * 100,
+        k: ((p.totalKnobs || 0) / (m.k || 1)) * 100,
+        d: ((p.totalDeaths || 0) / (m.d || 1)) * 100,
+        h: ((p.hoursPlayed || 0) / (m.h || 1)) * 100,
+        b: (((p.doorsTotal || 0) + (p.hdBadges || 0) + (p.ghostHuntBadges || 0) + (p.findApplesBadges || 0)) / (m.b || 1)) * 100,
+        r: ((p.totalRevives || 0) / (m.r || 1)) * 100
       };
-
-      // Weighted average
-      const weights = { wins: 0.25, knobs: 0.20, deaths: 0.15, hours: 0.15, badges: 0.15, revives: 0.10 };
-      let overall = 0;
-      for (const key in weights) {
-        overall += scores[key] * weights[key];
-      }
-      return Math.min(100, overall);
+      let o = (s.w * 0.25) + (s.k * 0.20) + (s.d * 0.15) + (s.h * 0.15) + (s.b * 0.15) + (s.r * 0.10);
+      return Math.min(100, o);
     }
 
-    // Get rank badge class
-    function getRankBadgeClass(rank) {
-      if (rank === 1) return 'rank-badge rank-1';
-      if (rank === 2) return 'rank-badge rank-2';
-      if (rank === 3) return 'rank-badge rank-3';
-      return 'rank-badge rank-other';
-    }
-
-    // Create player card
-    function createPlayerCard(player, rank) {
-      const overallScore = calculateOverallScore(player);
-      const totalBadges = (player.doorsTotal || 0) + (player.hdBadges || 0) + (player.ghostHuntBadges || 0) + (player.findApplesBadges || 0);
-
-      const card = document.createElement('div');
-      card.className = 'player-card';
-      card.innerHTML = `
-        <div class="card-header">
-          <div class="${getRankBadgeClass(rank)}" data-rank="${rank}">${rank}</div>
-          <div class="player-info">
-            <div class="player-name">${player.name}</div>
-            <div class="player-meta">
-              <div class="player-stat">📍 ${player.region || 'Unknown'}</div>
-              <div class="player-stat">⏱️ ${formatNumber(player.hoursPlayed)} hrs</div>
-            </div>
+    function getDet(p) {
+      const tb = (p.doorsTotal || 0) + (p.hdBadges || 0) + (p.ghostHuntBadges || 0) + (p.findApplesBadges || 0);
+      return `
+        <div class="details-panel">
+          <div class="grid-stats">
+            <div class="micro-card"><div class="micro-value">${fn(p.totalKnobs)}</div><div class="micro-label">Total Knobs</div></div>
+            <div class="micro-card"><div class="micro-value">${fn(p.totalRevives)}</div><div class="micro-label">Revives</div></div>
+            <div class="micro-card"><div class="micro-value">${fn(p.daysActive)}</div><div class="micro-label">Days Active</div></div>
+            <div class="micro-card"><div class="micro-value">${fn(tb)}</div><div class="micro-label">Total Badges</div></div>
+            <div class="micro-card"><div class="micro-value">${p.completionPercentage || 0}%</div><div class="micro-label">Completion</div></div>
           </div>
-          <div>
-            <div class="overall-score">${overallScore.toFixed(1)}</div>
-            <div class="overall-label">Overall</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <!-- Main Stats -->
-          <div class="stat-grid">
-            <div class="stat-item">
-              <div class="stat-item-value">${formatNumber(player.totalWins)}</div>
-              <div class="stat-item-label">Total Wins</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-item-value">${formatNumber(player.totalDeaths)}</div>
-              <div class="stat-item-label">Deaths</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-item-value">${formatNumber(player.totalKnobs)}</div>
-              <div class="stat-item-label">Knobs</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-item-value">${formatNumber(player.totalRevives)}</div>
-              <div class="stat-item-label">Revives</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-item-value">${formatNumber(player.daysActive)}</div>
-              <div class="stat-item-label">Days Active</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-item-value">${formatNumber(totalBadges)}</div>
-              <div class="stat-item-label">Badges</div>
-            </div>
+          
+          <div class="section-tag">Core Floors</div>
+          <div class="grid-stats">
+            <div class="micro-card"><div class="micro-value">${fn(p.winsHotel || 0)}</div><div class="micro-label">Hotel</div></div>
+            <div class="micro-card"><div class="micro-value">${fn(p.winsMines || 0)}</div><div class="micro-label">Mines</div></div>
+            <div class="micro-card"><div class="micro-value">${fn(p.winsRooms || 0)}</div><div class="micro-label">Rooms</div></div>
+            <div class="micro-card"><div class="micro-value">${fn(p.winsBackdoor || 0)}</div><div class="micro-label">Backdoor</div></div>
           </div>
 
-          <!-- Floor Wins -->
-          <div class="section-title">🚪 Floor Wins</div>
-          <div class="details-grid">
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.winsHotel || 0)}</div>
-              <div class="detail-badge-label">Hotel</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.winsLegacyHotel || 0)}</div>
-              <div class="detail-badge-label">Legacy</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.winsRooms || 0)}</div>
-              <div class="detail-badge-label">Rooms</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.winsBackdoor || 0)}</div>
-              <div class="detail-badge-label">Backdoor</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.winsMines || 0)}</div>
-              <div class="detail-badge-label">Mines</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.winsOutdoors || 0)}</div>
-              <div class="detail-badge-label">Outdoors</div>
-            </div>
-          </div>
-
-          <!-- Special Modes -->
-          <div class="section-title">🎮 Special Modes</div>
-          <div class="details-grid">
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.winsSuperHardMode || 0)}</div>
-              <div class="detail-badge-label">Super Hard</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.winsHotelHell || 0)}</div>
-              <div class="detail-badge-label">Hell</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.winsRetroMode || 0)}</div>
-              <div class="detail-badge-label">Retro</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.winsVoidBusters || 0)}</div>
-              <div class="detail-badge-label">Void</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.winsChaosMode || 0)}</div>
-              <div class="detail-badge-label">Chaos</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.winsMatchmaking || 0)}</div>
-              <div class="detail-badge-label">Ranked</div>
-            </div>
-          </div>
-
-          <!-- Badges -->
-          <div class="section-title">🏅 Achievement Badges</div>
-          <div class="details-grid">
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.doorsTotal || 0)}</div>
-              <div class="detail-badge-label">Doors</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.hdBadges || 0)}</div>
-              <div class="detail-badge-label">H"D"</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.ghostHuntBadges || 0)}</div>
-              <div class="detail-badge-label">Ghost</div>
-            </div>
-            <div class="detail-badge">
-              <div class="detail-badge-value">${formatNumber(player.findApplesBadges || 0)}</div>
-              <div class="detail-badge-label">Apples</div>
-            </div>
-          </div>
-
-          <div class="toggle-section">
-            <span style="color: #909090; font-size: 0.9rem;">Completion: ${player.completionPercentage || 0}%</span>
-            <button class="toggle-btn" onclick="toggleCard(this)">Collapse</button>
+          <div class="section-tag">Special Operations</div>
+          <div class="grid-stats">
+            <div class="micro-card"><div class="micro-value">${fn(p.winsSuperHardMode || 0)}</div><div class="micro-label">Super Hard</div></div>
+            <div class="micro-card"><div class="micro-value">${fn(p.winsHotelHell || 0)}</div><div class="micro-label">Hotel Hell</div></div>
+            <div class="micro-card"><div class="micro-value">${fn(p.winsRetroMode || 0)}</div><div class="micro-label">Retro</div></div>
+            <div class="micro-card"><div class="micro-value">${fn(p.winsMatchmaking || 0)}</div><div class="micro-label">Ranked</div></div>
           </div>
         </div>
       `;
-
-      card.querySelector('.card-header').addEventListener('click', () => toggleCard(card.querySelector('.toggle-btn')));
-      return card;
     }
 
-    // Toggle card expansion
-    function toggleCard(btn) {
-      const card = btn.closest('.player-card');
-      const body = card.querySelector('.card-body');
-      body.classList.toggle('expanded');
-      btn.textContent = body.classList.contains('expanded') ? 'Collapse' : 'Expand';
-    }
-
-    // Render players
-    function renderPlayers(players, sortBy = 'overall') {
-      const container = document.getElementById('playersContainer');
+    function rPod(pArr) {
+      const c = document.getElementById('podiumArea');
+      c.innerHTML = '';
+      if(pArr.length === 0) return;
       
-      if (!players || players.length === 0) {
-        container.innerHTML = '<div class="no-players">No players found</div>';
-        return;
-      }
-
-      // Sort players
-      let sorted = [...players];
-      if (sortBy === 'overall') {
-        sorted.sort((a, b) => calculateOverallScore(b) - calculateOverallScore(a));
-      } else if (sortBy === 'wins') {
-        sorted.sort((a, b) => (b.totalWins || 0) - (a.totalWins || 0));
-      } else if (sortBy === 'hours') {
-        sorted.sort((a, b) => (b.hoursPlayed || 0) - (a.hoursPlayed || 0));
-      } else if (sortBy === 'deaths') {
-        sorted.sort((a, b) => (b.totalDeaths || 0) - (a.totalDeaths || 0));
-      } else if (sortBy === 'knobs') {
-        sorted.sort((a, b) => (b.totalKnobs || 0) - (a.totalKnobs || 0));
-      }
-
-      container.innerHTML = '';
-      sorted.forEach((player, index) => {
-        container.appendChild(createPlayerCard(player, index + 1));
+      const ord = [1, 0, 2];
+      ord.forEach(i => {
+        if(!pArr[i]) return;
+        const p = pArr[i];
+        const r = i + 1;
+        const o = calc(p);
+        
+        const d = document.createElement('div');
+        d.className = `podium-card podium-${r}`;
+        d.innerHTML = `
+          <div class="rank-badge">${r}</div>
+          <h2 class="text-xl font-bold text-white mb-1">${p.name}</h2>
+          <div class="text-xs text-cyan-400 mb-4 tracking-wider uppercase">${p.region || 'Unknown'}</div>
+          
+          <div class="w-full flex justify-between px-4 mb-2">
+            <span class="stat-label">Rating</span>
+            <span class="stat-value text-white">${o.toFixed(1)}</span>
+          </div>
+          <div class="w-full flex justify-between px-4 mb-2">
+            <span class="stat-label">Wins</span>
+            <span class="stat-value text-white">${fn(p.totalWins)}</span>
+          </div>
+          <div class="w-full flex justify-between px-4">
+            <span class="stat-label">Deaths</span>
+            <span class="stat-value text-white">${fn(p.totalDeaths)}</span>
+          </div>
+          ${getDet(p)}
+        `;
+        d.addEventListener('click', function() {
+          const wasActive = this.classList.contains('active');
+          document.querySelectorAll('.podium-card').forEach(el => el.classList.remove('active'));
+          if(!wasActive) this.classList.add('active');
+        });
+        c.appendChild(d);
       });
     }
 
-    // Event listeners
+    function rList(pArr, stI) {
+      const c = document.getElementById('playersList');
+      c.innerHTML = '';
+      if(pArr.length === 0) {
+        c.innerHTML = '<div class="text-center py-10 text-gray-500">No operatives found matching the criteria.</div>';
+        return;
+      }
+
+      pArr.forEach((p, i) => {
+        const r = stI + i + 1;
+        const o = calc(p);
+        const d = document.createElement('div');
+        d.className = 'list-row';
+        d.innerHTML = `
+          <div class="list-row-main">
+            <div class="list-rank">#${r}</div>
+            <div>
+              <div class="text-white font-bold text-lg">${p.name}</div>
+              <div class="text-xs text-gray-500 uppercase flex gap-2">
+                <span>${p.region || 'UNK'}</span>
+                <span class="${p.status === 'Online' ? 'text-green-500' : 'text-gray-600'}">• ${p.status}</span>
+              </div>
+            </div>
+            <div class="hide-mobile">
+              <div class="stat-value text-cyan-400">${o.toFixed(1)}</div>
+            </div>
+            <div class="hide-mobile">
+              <div class="stat-value text-white">${fn(p.totalWins)}</div>
+            </div>
+            <div class="hide-mobile">
+              <div class="stat-value text-white">${fn(p.hoursPlayed)}</div>
+            </div>
+            <div class="text-right">
+              <svg class="chevron w-5 h-5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+          </div>
+          ${getDet(p)}
+        `;
+        d.querySelector('.list-row-main').addEventListener('click', function() {
+          d.classList.toggle('active');
+        });
+        c.appendChild(d);
+      });
+    }
+
+    function render(data, sort) {
+      let s = [...data];
+      if (sort === 'overall') s.sort((a, b) => calc(b) - calc(a));
+      else if (sort === 'wins') s.sort((a, b) => (b.totalWins || 0) - (a.totalWins || 0));
+      else if (sort === 'hours') s.sort((a, b) => (b.hoursPlayed || 0) - (a.hoursPlayed || 0));
+      else if (sort === 'deaths') s.sort((a, b) => (b.totalDeaths || 0) - (a.totalDeaths || 0));
+      else if (sort === 'knobs') s.sort((a, b) => (b.totalKnobs || 0) - (a.totalKnobs || 0));
+
+      const isSearchActive = document.getElementById('searchInput').value.length > 0;
+
+      if (!isSearchActive && s.length >= 3 && (sort === 'overall' || sort === 'wins')) {
+        document.getElementById('podiumArea').style.display = 'grid';
+        rPod(s.slice(0, 3));
+        rList(s.slice(3), 3);
+      } else {
+        document.getElementById('podiumArea').style.display = 'none';
+        rList(s, 0);
+      }
+    }
+
     document.getElementById('searchInput').addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      const filtered = playersData.filter(p => p.name.toLowerCase().includes(query));
-      const sortBy = document.getElementById('sortSelect').value;
-      renderPlayers(filtered, sortBy);
+      const q = e.target.value.toLowerCase();
+      const f = playersData.filter(p => p.name.toLowerCase().includes(q));
+      render(f, document.getElementById('sortSelect').value);
     });
 
     document.getElementById('sortSelect').addEventListener('change', (e) => {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = playersData.filter(p => p.name.toLowerCase().includes(query));
-      renderPlayers(filtered, e.target.value);
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const f = playersData.filter(p => p.name.toLowerCase().includes(q));
+      render(f, e.target.value);
     });
 
-    // Initial render
-    renderPlayers(playersData, 'overall');
+    render(playersData, 'overall');
   </script>
 </body>
 </html>
