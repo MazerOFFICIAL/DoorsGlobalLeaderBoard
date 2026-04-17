@@ -1,137 +1,345 @@
-<!DOCTYPE html>
+п»ї<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Doors Global Leaderboard</title>
   <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, system-ui, sans-serif;
+      color: #eef2ff;
+      background: #060a1e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: Inter, system-ui, sans-serif;
-      background: linear-gradient(180deg, #060a1e 0%, #12172f 100%);
-      color: #eef2ff;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, rgba(93, 125, 255, 0.18), transparent 28%),
+        linear-gradient(180deg, #070b1e 0%, #11172d 100%);
     }
+
     .page {
-      max-width: 1080px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 32px 24px;
+      padding: 28px 20px 40px;
     }
+
     .hero {
       display: grid;
-      gap: 16px;
+      gap: 14px;
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
+
+    .hero p,
     .hero h1 {
       margin: 0;
-      font-size: clamp(2.4rem, 4vw, 4rem);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 5vw, 4rem);
+      line-height: 1.02;
       letter-spacing: -0.04em;
     }
+
     .hero p {
-      margin: 0;
-      color: #c5d4ff;
-      max-width: 760px;
-      justify-self: center;
+      max-width: 780px;
+      margin: 0 auto;
+      color: #b9c7ff;
       line-height: 1.7;
     }
-    .board-card {
-      background: rgba(14, 25, 58, 0.92);
-      border: 1px solid rgba(110, 143, 255, 0.16);
-      border-radius: 24px;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 24px;
+    }
+
+    .board-card,
+    .sidebar-card {
+      background: rgba(15, 24, 57, 0.94);
+      border: 1px solid rgba(86, 111, 255, 0.16);
+      border-radius: 28px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.24);
       padding: 24px;
     }
-    .controls {
+
+    .section-header {
       display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
+      align-items: center;
       justify-content: space-between;
+      gap: 16px;
       margin-bottom: 20px;
     }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .section-header small {
+      color: #8fa0ff;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
     .controls input,
     .controls button {
-      padding: 12px 18px;
+      padding: 14px 18px;
       border-radius: 999px;
-      border: none;
-      font-size: 0.95rem;
-    }
-    .controls input {
-      flex: 1 1 220px;
-      background: rgba(226, 232, 255, 0.08);
-      color: #eef2ff;
       border: 1px solid rgba(226, 232, 255, 0.16);
+      font-size: 0.95rem;
+      color: #eef2ff;
+      background: rgba(226, 232, 255, 0.06);
     }
+
+    .controls input::placeholder {
+      color: rgba(226, 232, 255, 0.6);
+    }
+
     .controls button {
-      background: #5d7dff;
-      color: white;
+      min-width: 170px;
+      background: linear-gradient(135deg, #5d7dff 0%, #3c5eef 100%);
       cursor: pointer;
-      transition: transform 0.2s ease, background 0.2s ease;
+      transition: transform 0.18s ease, opacity 0.18s ease;
     }
+
     .controls button:hover {
       transform: translateY(-1px);
-      background: #4060f9;
+      opacity: 0.98;
     }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 560px;
+      min-width: 640px;
+      font-size: 0.96rem;
+      color: #eef2ff;
     }
+
     th,
     td {
-      padding: 16px 12px;
+      padding: 14px 12px;
       text-align: left;
     }
+
     thead th {
-      color: #a5b3ff;
+      color: #99a8ff;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
+
     tbody tr {
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      transition: background-color 0.18s ease;
+      cursor: pointer;
     }
-    tbody tr:hover {
-      background: rgba(255, 255, 255, 0.04);
+
+    tbody tr:hover,
+    tbody tr.selected-row {
+      background: rgba(93, 125, 255, 0.12);
     }
-    tbody td {
-      color: #edf2ff;
-    }
+
     .rank {
-      width: 64px;
+      width: 60px;
       font-weight: 700;
-      color: #f4f7ff;
+      color: #fbfbff;
     }
+
     .player-name {
       display: flex;
-      align-items: center;
-      gap: 10px;
+      flex-direction: column;
+      gap: 6px;
     }
-    .badge {
+
+    .player-name strong {
+      color: #f8fbff;
+    }
+
+    .badge,
+    .status-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 4px 10px;
+      padding: 6px 10px;
       border-radius: 999px;
+      font-size: 0.78rem;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
+    .badge {
       background: rgba(93, 125, 255, 0.18);
       color: #c5d4ff;
-      font-size: 0.85rem;
     }
-    .footer {
-      margin-top: 24px;
-      color: #94a3ff;
+
+    .status-badge {
+      color: #eef2ff;
+      background: rgba(93, 255, 178, 0.18);
+    }
+
+    .status-badge.offline {
+      background: rgba(255, 93, 93, 0.18);
+      color: #ffd7d7;
+    }
+
+    .sidebar-card {
+      display: grid;
+      gap: 22px;
+    }
+
+    .player-card {
+      display: grid;
+      gap: 18px;
+    }
+
+    .player-header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 92px;
+      height: 92px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #0f1937;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .player-meta {
+      display: grid;
+      gap: 10px;
+    }
+
+    .player-meta strong {
+      font-size: 1.25rem;
+      color: #f8fbff;
+    }
+
+    .stat-line {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .stat-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(93, 125, 255, 0.12);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+      color: #fbfbff;
+    }
+
+    .progress-row {
+      display: grid;
+      gap: 8px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #c5d4ff;
+    }
+
+    .progress-bar {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #5d7dff 0%, #68fccd 100%);
+    }
+
+    .details-list {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #dbe3ff;
+    }
+
+    .details-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
       font-size: 0.95rem;
     }
+
+    .details-item span:last-child {
+      color: #eef2ff;
+      font-weight: 600;
+    }
+
+    .footer {
+      margin-top: 8px;
+      color: #8fa0ff;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 980px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 720px) {
+      .page {
+        padding: 20px 16px 30px;
+      }
+
       .controls {
-        flex-direction: column;
+        grid-template-columns: 1fr;
       }
-      table {
-        min-width: auto;
-      }
-      th,
-      td {
-        padding: 12px 8px;
+
+      .stat-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -141,84 +349,230 @@
     <section class="hero">
       <div>
         <p>Roblox Doors Global Leaderboard</p>
-        <h1>идерборд лучших игроков Doors</h1>
+        <h1>Р“Р»РѕР±Р°Р»СЊРЅС‹Р№ Р»РёРґРµСЂР±РѕСЂРґ Рё РїСЂРѕС„РёР»СЊ РёРіСЂРѕРєР°</h1>
       </div>
-      <p>тслеживайте лучшую статистику по игрокам, сортируйте очки и ищите участников. то стартовая версия с примером таблицы, которую можно связать с реальной базой данных Roblox API позже.</p>
+      <p>Р—РґРµСЃСЊ СЃРѕР±СЂР°РЅР° РїСЂРѕРґСѓРјР°РЅРЅР°СЏ СЃС‚СЂСѓРєС‚СѓСЂР° С‚Р°Р±Р»РёС†С‹, РїРѕРёСЃРєР°, СЃРѕСЂС‚РёСЂРѕРІРєРё Рё РїРѕРґСЂРѕР±РЅРѕРіРѕ РїСЂРѕС„РёР»СЏ РёРіСЂРѕРєР° СЃ Р¶РёРІС‹Рј СЃС‚Р°С‚СѓСЃРѕРј. Р’ Р±СѓРґСѓС‰РµРј РјРѕР¶РЅРѕ РїРѕРґРєР»СЋС‡РёС‚СЊ РґР°РЅРЅС‹Рµ РёР· Roblox API РёР»Рё РІР°С€РµРіРѕ СЃРѕР±СЃС‚РІРµРЅРЅРѕРіРѕ СЃРµСЂРІРµСЂР°.</p>
     </section>
 
-    <section class="board-card">
-      <div class="controls">
-        <input id="searchInput" type="search" placeholder="оиск игрока..." aria-label="оиск игрока" />
-        <button id="sortScoreBtn" type="button">Сортировать по очкам v</button>
-      </div>
+    <section class="dashboard-grid">
+      <article class="board-card" aria-labelledby="leaderboardTitle">
+        <div class="section-header">
+          <div>
+            <h2 id="leaderboardTitle">РўР°Р±Р»РёС†Р° Р»РёРґРµСЂРѕРІ</h2>
+            <small>РљР»РёРєРЅРёС‚Рµ РЅР° СЃС‚СЂРѕРєСѓ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° РїСЂРѕС„РёР»СЏ</small>
+          </div>
+          <span class="badge">Р’СЃРµРіРѕ РёРіСЂРѕРєРѕРІ: <strong id="playersCount"></strong></span>
+        </div>
 
-      <div class="table-wrapper">
-        <table aria-label="лобальный лидерборд Doors">
-          <thead>
-            <tr>
-              <th>есто</th>
-              <th>грок</th>
-              <th>чки</th>
-              <th>рохождение</th>
-              <th>ата</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboardBody"></tbody>
-        </table>
-      </div>
-      <p class="footer">ример данных можно заменить реальной статистикой через API Roblox или Firebase.</p>
+        <div class="controls">
+          <input id="searchInput" type="search" placeholder="РџРѕРёСЃРє РёРіСЂРѕРєР°, СЃС‚Р°С‚СѓСЃР° РёР»Рё РїСЂРѕРіСЂРµСЃСЃР°" aria-label="РџРѕРёСЃРє РёРіСЂРѕРєР°" />
+          <button id="sortScoreBtn" type="button">РЎРѕСЂС‚РёСЂРѕРІР°С‚СЊ: РїРѕ РѕС‡РєР°Рј в†“</button>
+        </div>
+
+        <div class="table-wrapper">
+          <table aria-label="Р“Р»РѕР±Р°Р»СЊРЅС‹Р№ Р»РёРґРµСЂР±РѕСЂРґ Doors">
+            <thead>
+              <tr>
+                <th>РњРµСЃС‚Рѕ</th>
+                <th>РРіСЂРѕРє</th>
+                <th>РћС‡РєРё</th>
+                <th>РџСЂРѕРіСЂРµСЃСЃ</th>
+                <th>РЎС‚Р°С‚СѓСЃ</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody"></tbody>
+          </table>
+        </div>
+
+        <p class="footer">Р”Р°РЅРЅС‹Рµ РІ С‚Р°Р±Р»РёС†Рµ Р·Р°РіСЂСѓР¶Р°СЋС‚СЃСЏ РёР· С„Р°Р№Р»Р° <strong>playersdata.js</strong>. РњРѕР¶РЅРѕ Р·Р°РјРµРЅРёС‚СЊ РЅР° API.</p>
+      </article>
+
+      <aside class="sidebar-card" aria-labelledby="profileTitle">
+        <div class="section-header">
+          <div>
+            <h2 id="profileTitle">РџСЂРѕС„РёР»СЊ РёРіСЂРѕРєР°</h2>
+            <small>Р–РёРІРѕР№ СЃС‚Р°С‚СѓСЃ Рё СЃС‚Р°С‚РёСЃС‚РёРєР° РІС‹Р±СЂР°РЅРЅРѕРіРѕ РёРіСЂРѕРєР°</small>
+          </div>
+        </div>
+
+        <div class="player-card">
+          <div class="player-header">
+            <div class="avatar">
+              <img id="profileAvatar" src="" alt="РђРІР°С‚Р°СЂ РёРіСЂРѕРєР°" />
+            </div>
+            <div class="player-meta">
+              <strong id="profileName">ShadowRunner</strong>
+              <div class="player-name">
+                <span>Р Р°РЅРі: <strong id="profileRank">1</strong></span>
+            </div>
+          </div>
+
+          <div class="stat-line">
+            <div class="progress-row">
+              <div class="progress-label">
+                <span>РџСЂРѕРіСЂРµСЃСЃ</span>
+                <span id="profileProgressLabel">Alpha</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="profileProgressBar" style="width: 78%"></div>
+              </div>
+            </div>
+
+            <div class="details-list">
+              <div class="details-item"><span>РѕСЃР»РµРґРЅСЏСЏ Р°РєС‚РёРІРЅРѕСЃС‚СЊ</span><span id="profileLastActive">РЎРµР№С‡Р°СЃ РІ РёРіСЂРµ</span></div>
+              <div class="details-item"><span>РѕРєР°С†РёСЏ</span><span id="profileLiveRoom">РЎРѕРєСЂРѕРІРёС‰РЅРёС†Р°</span></div>
+              <div class="details-item"><span>РµРіРёРѕРЅ</span><span id="profileRegion">РІСЂРѕРїР°</span></div>
+            </div>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat-card">
+              <strong id="profileScore">17 420</strong>
+              <span>Р±С‰РёРµ РѕС‡РєРё</span>
+            </div>
+            <div class="stat-card">
+              <strong id="profileDoors">53</strong>
+              <span>СЂРѕР№РґРµРЅРѕ РґРІРµСЂРµР№</span>
+            </div>
+            <div class="stat-card">
+              <strong id="profileRuns">128</strong>
+              <span>Р’СЃРµРіРѕ Р·Р°РїСѓСЃРєРѕРІ</span>
+            </div>
+            <div class="stat-card">
+              <strong id="profileWeapon">РµС‡Р°С‚СЊ РўСЊРјС‹</strong>
+              <span>СЋР±РёРјРѕРµ РѕСЂСѓР¶РёРµ</span>
+            </div>
+          </div>
+
+          <div class="details-list">
+            <div class="details-item"><span>СѓС‡С€РёР№ СЂРµР·СѓР»СЊС‚Р°С‚</span><span id="profileBestRun">СЂРѕРІРµРЅСЊ 90</span></div>
+            <div class="details-item"><span>РїРёСЃР°РЅРёРµ</span><span id="profileNotes">РёРґРµСЂ РїРѕ РѕС‡РєР°Рј Рё С‡Р°СЃС‚РѕС‚Рµ РёРіСЂ.</span></div>
+          </div>
+        </div>
+      </aside>
     </section>
   </main>
 
+  <script src="playersdata.js"></script>
   <script>
-    const players = [
-      { rank: 1, name: 'ShadowRunner', score: 17420, progress: 'льфа', date: '2026-04-16' },
-      { rank: 2, name: 'DoorHunter', score: 16130, progress: 'ризрак', date: '2026-04-16' },
-      { rank: 3, name: 'NightStalker', score: 14950, progress: 'ошмар', date: '2026-04-15' },
-      { rank: 4, name: 'BladeMage', score: 13890, progress: 'аньон', date: '2026-04-15' },
-      { rank: 5, name: 'LunaPick', score: 13100, progress: 'отерянный этаж', date: '2026-04-14' },
-      { rank: 6, name: 'AbyssWalker', score: 12240, progress: 'очной режим', date: '2026-04-14' },
-    ];
-
     const leaderboardBody = document.getElementById('leaderboardBody');
+    const playersCount = document.getElementById('playersCount');
     const searchInput = document.getElementById('searchInput');
     const sortScoreBtn = document.getElementById('sortScoreBtn');
+    const profileAvatar = document.getElementById('profileAvatar');
+    const profileName = document.getElementById('profileName');
+    const profileRank = document.getElementById('profileRank');
+    const profileStatus = document.getElementById('profileStatus');
+    const profileProgressLabel = document.getElementById('profileProgressLabel');
+    const profileProgressBar = document.getElementById('profileProgressBar');
+    const profileLastActive = document.getElementById('profileLastActive');
+    const profileLiveRoom = document.getElementById('profileLiveRoom');
+    const profileRegion = document.getElementById('profileRegion');
+    const profileScore = document.getElementById('profileScore');
+    const profileDoors = document.getElementById('profileDoors');
+    const profileRuns = document.getElementById('profileRuns');
+    const profileWeapon = document.getElementById('profileWeapon');
+    const profileBestRun = document.getElementById('profileBestRun');
+    const profileNotes = document.getElementById('profileNotes');
+
+    let currentPlayer = playersData[0];
     let sortDescending = true;
+    let activeRows = [];
+
+    function formatScore(value) {
+      return value.toLocaleString('ru-RU');
+    }
+
+    function getProgressValue(progress) {
+      const map = {
+        'Alpha': 90,
+        'Ghost': 80,
+        'Nightmare': 74,
+        'Canyon': 66,
+        'Lost Floor': 58,
+        'Night Mode': 52
+      };
+      return map[progress] || 48;
+    }
+
+    function renderProfile(player) {
+      const isOnline = player.status.toLowerCase() === 'online';
+      currentPlayer = player;
+
+      profileAvatar.src = player.avatarUrl;
+      profileName.textContent = player.name;
+      profileRank.textContent = player.rank;
+      profileStatus.textContent = player.status;
+      profileStatus.className = isOnline ? 'status-badge' : 'status-badge offline';
+      profileProgressLabel.textContent = player.progress;
+      profileProgressBar.style.width = `${getProgressValue(player.progress)}%`;
+      profileLastActive.textContent = player.lastActive;
+      profileLiveRoom.textContent = player.liveRoom;
+      profileRegion.textContent = player.region;
+      profileScore.textContent = formatScore(player.score);
+      profileDoors.textContent = player.doorsCleared;
+      profileRuns.textContent = player.totalRuns;
+      profileWeapon.textContent = player.favoriteWeapon;
+      profileBestRun.textContent = player.bestRun;
+      profileNotes.textContent = player.notes;
+    }
 
     function renderRows(data) {
-      leaderboardBody.innerHTML = data.map(player => `
-        <tr>
-          <td class="rank">${player.rank}</td>
-          <td>
-            <div class="player-name">
-              <span>${player.name}</span>
-              <span class="badge">${player.progress}</span>
-            </div>
-          </td>
-          <td>${player.score.toLocaleString('ru-RU')}</td>
-          <td>${player.progress}</td>
-          <td>${player.date}</td>
-        </tr>
-      `).join('');
+      leaderboardBody.innerHTML = data.map(player => {
+        const activeClass = player.rank === currentPlayer.rank ? 'selected-row' : '';
+        return `
+          <tr class="${activeClass}" onclick="selectPlayer(${player.rank})" aria-label="РџСЂРѕС„РёР»СЊ ${player.name}">
+            <td class="rank">${player.rank}</td>
+            <td>
+              <div class="player-name">
+                <strong>${player.name}</strong>
+                <span class="badge">${player.progress}</span>
+              </div>
+            </td>
+            <td>${formatScore(player.score)}</td>
+            <td>${player.progress}</td>
+            <td><span class="badge ${player.status.toLowerCase() === 'online' ? '' : 'offline'}">${player.status}</span></td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function updateLeaderboard() {
       const query = searchInput.value.trim().toLowerCase();
-      const filtered = players.filter(player => player.name.toLowerCase().includes(query));
+      const filtered = playersData.filter(player => {
+        return [player.name, player.progress, player.status].some(value =>
+          value.toLowerCase().includes(query)
+        );
+      });
       renderRows(filtered);
     }
 
-    searchInput.addEventListener('input', updateLeaderboard);
+    function sortPlayers() {
+      playersData.sort((a, b) => sortDescending ? b.score - a.score : a.score - b.score);
+      sortScoreBtn.textContent = sortDescending ? 'РЎРѕСЂС‚РёСЂРѕРІР°С‚СЊ: РїРѕ РѕС‡РєР°Рј в†“' : 'РЎРѕСЂС‚РёСЂРѕРІР°С‚СЊ: РїРѕ РѕС‡РєР°Рј в†‘';
+      updateLeaderboard();
+    }
 
+    function selectPlayer(rank) {
+      const player = playersData.find(item => item.rank === rank);
+      if (!player) return;
+      renderProfile(player);
+      updateLeaderboard();
+    }
+
+    window.selectPlayer = selectPlayer;
+
+    searchInput.addEventListener('input', updateLeaderboard);
     sortScoreBtn.addEventListener('click', () => {
       sortDescending = !sortDescending;
-      players.sort((a, b) => sortDescending ? b.score - a.score : a.score - b.score);
-      sortScoreBtn.textContent = sortDescending ? 'Сортировать по очкам v' : 'Сортировать по очкам ^';
-      updateLeaderboard();
+      sortPlayers();
     });
 
-    players.sort((a, b) => b.score - a.score);
-    renderRows(players);
+    document.addEventListener('DOMContentLoaded', () => {
+      playersCount.textContent = playersData.length;
+      sortPlayers();
+      renderProfile(currentPlayer);
+    });
   </script>
 </body>
 </html>
