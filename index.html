@@ -1,636 +1,570 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-[#0F0F0F] text-[#E6E6E6]">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DOORS Player Rankings | Global Leaderboard</title>
+  <title>DOORS GLOBAL LEADERBOARD</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
-    * { font-family: 'Rubik', 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+    * { font-family: 'Rubik', sans-serif; }
     
-    .bg-ultra-dark { background-color: #0F0F0F; }
-    .bg-dark-panel { background-color: #1A1A1A; }
-    .bg-content-panel { background-color: #252525; }
-    .border-subtle { border-color: #404040; }
-    .accent-gold { color: #FFD700; }
-    .accent-cyber { color: #00D9FF; }
-    .accent-neon { color: #FF006E; }
-    
-    body { background-color: #0F0F0F; }
-    
-    .nav-bar { 
+    body {
+      background: #0F0F0F;
+      color: #E6E6E6;
+    }
+
+    .header {
       background: linear-gradient(180deg, #1A1A1A 0%, #151515 100%);
-      border-bottom: 2px solid #404040;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+      border-bottom: 2px solid #FFD700;
+      box-shadow: 0 8px 32px rgba(255, 215, 0, 0.1);
+      padding: 24px 0;
     }
-    
-    .header-hero {
-      background: linear-gradient(135deg, #1A1A1A 0%, #252525 50%, #1A1A1A 100%);
-      border-bottom: 1px solid #404040;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .header-hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle at 20% 50%, rgba(0, 217, 255, 0.05) 0%, transparent 50%);
-      pointer-events: none;
-    }
-    
-    .tab-btn {
-      transition: all 0.3s ease;
-      border-bottom: 3px solid transparent;
-      position: relative;
-    }
-    
-    .tab-btn:hover {
-      color: #FFD700;
-    }
-    
-    .tab-btn.active {
-      color: #FFD700;
-      border-bottom-color: #FFD700;
-    }
-    
-    .leaderboard-table {
-      border-collapse: separate;
-      border-spacing: 0;
-      overflow: hidden;
-      border-radius: 8px;
-    }
-    
-    .table-header {
-      background: linear-gradient(90deg, #1A1A1A, #252525);
-      border-bottom: 2px solid #404040;
+
+    .header h1 {
+      font-size: 2.5rem;
       font-weight: 700;
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
+      color: #FFD700;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
     }
-    
-    .table-row {
-      border-bottom: 1px solid #2A2A2A;
-      transition: all 0.2s ease;
-    }
-    
-    .table-row:hover {
-      background-color: #303030 !important;
-      box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.05);
-    }
-    
-    .table-row-even { background-color: #1A1A1A; }
-    .table-row-odd { background-color: #202020; }
-    
-    .rank-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      font-weight: 700;
+
+    .header p {
+      color: #00FFFF;
       font-size: 0.9rem;
+      margin-top: 8px;
     }
-    
-    .rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; }
-    .rank-2 { background: linear-gradient(135deg, #C0C0C0, #808080); color: #FFF; }
-    .rank-3 { background: linear-gradient(135deg, #CD7F32, #8B4513); color: #FFF; }
-    
-    .stat-badge {
-      display: inline-block;
-      background-color: #2A2A2A;
-      border: 1px solid #404040;
-      border-radius: 6px;
-      padding: 4px 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
+
+    .controls {
+      display: flex;
+      gap: 16px;
+      margin: 24px 0;
+      flex-wrap: wrap;
     }
-    
-    .stat-positive { color: #00FF00; }
-    .stat-warning { color: #FFD700; }
-    .stat-info { color: #00D9FF; }
-    
-    .player-name {
-      font-weight: 700;
-      color: #FFD700;
-      transition: all 0.2s;
-    }
-    
-    .player-name:hover {
-      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-    }
-    
-    .stat-box {
-      background: linear-gradient(135deg, #1A1A1A, #252525);
+
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      background: #1A1A1A;
       border: 1px solid #404040;
       border-radius: 8px;
-      padding: 16px;
+      padding: 12px 16px;
+      color: #E6E6E6;
       transition: all 0.3s;
     }
-    
-    .stat-box:hover {
-      border-color: #FFD700;
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
-    }
-    
-    .stat-value {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: #FFD700;
-    }
-    
-    .stat-label {
-      font-size: 0.85rem;
-      color: #909090;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    
-    .input-field {
-      background-color: #1A1A1A;
-      border: 1px solid #404040;
-      border-radius: 6px;
-      padding: 10px 14px;
-      color: #E6E6E6;
-      transition: all 0.2s;
-    }
-    
-    .input-field:focus {
+
+    .search-input:focus {
       outline: none;
       border-color: #FFD700;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
     }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, #FFD700, #FFA500);
-      color: #000;
-      font-weight: 700;
-      padding: 10px 24px;
-      border-radius: 6px;
+
+    .sort-select {
+      background: #1A1A1A;
+      border: 1px solid #404040;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #E6E6E6;
+      cursor: pointer;
       transition: all 0.3s;
-      border: none;
+      min-width: 200px;
+    }
+
+    .sort-select:focus {
+      outline: none;
+      border-color: #FFD700;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+    }
+
+    .players-container {
+      display: grid;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .player-card {
+      background: linear-gradient(135deg, #1A1A1A 0%, #252525 100%);
+      border: 1px solid #404040;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s;
       cursor: pointer;
     }
-    
-    .btn-primary:hover {
+
+    .player-card:hover {
+      border-color: #FFD700;
+      box-shadow: 0 8px 24px rgba(255, 215, 0, 0.15);
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
     }
-    
-    .online-indicator {
-      display: inline-flex;
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: 600;
+      padding: 20px;
+      background: linear-gradient(90deg, #252525 0%, #1A1A1A 100%);
+      border-bottom: 1px solid #404040;
     }
-    
-    .online { background-color: rgba(0, 255, 0, 0.15); color: #00FF00; }
-    .offline { background-color: rgba(255, 100, 100, 0.15); color: #FF6464; }
-    
-    .scroll-container {
-      overflow-x: auto;
+
+    .rank-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .rank-1 {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #000;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    }
+
+    .rank-2 {
+      background: linear-gradient(135deg, #C0C0C0, #808080);
+      color: #000;
+      box-shadow: 0 0 16px rgba(192, 192, 192, 0.3);
+    }
+
+    .rank-3 {
+      background: linear-gradient(135deg, #CD7F32, #8B4513);
+      color: #fff;
+      box-shadow: 0 0 16px rgba(205, 127, 50, 0.3);
+    }
+
+    .rank-other {
+      background: linear-gradient(135deg, #404040, #303030);
+      color: #FFD700;
+    }
+
+    .player-info {
+      flex: 1;
+      margin-left: 24px;
+    }
+
+    .player-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #FFD700;
+      margin-bottom: 4px;
+    }
+
+    .player-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 0.85rem;
+      color: #909090;
+    }
+
+    .player-stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .overall-score {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #00FFFF;
+      text-align: center;
+    }
+
+    .overall-label {
+      font-size: 0.75rem;
+      color: #909090;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    .card-body {
+      padding: 20px;
+      display: none;
+    }
+
+    .card-body.expanded {
+      display: block;
+      animation: expandIn 0.3s ease-out;
+    }
+
+    @keyframes expandIn {
+      from {
+        opacity: 0;
+        max-height: 0;
+      }
+      to {
+        opacity: 1;
+        max-height: 1000px;
+      }
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .stat-item {
+      background: #0F0F0F;
+      border: 1px solid #404040;
       border-radius: 8px;
+      padding: 12px;
+      text-align: center;
     }
-    
-    ::-webkit-scrollbar {
-      height: 8px;
-      width: 8px;
+
+    .stat-item-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FFD700;
     }
-    
-    ::-webkit-scrollbar-track {
-      background: #1A1A1A;
+
+    .stat-item-label {
+      font-size: 0.75rem;
+      color: #909090;
+      margin-top: 4px;
+      text-transform: uppercase;
     }
-    
-    ::-webkit-scrollbar-thumb {
-      background: #404040;
-      border-radius: 4px;
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #00FFFF;
+      margin: 16px 0 8px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    
-    ::-webkit-scrollbar-thumb:hover {
-      background: #505050;
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    .detail-badge {
+      background: #0F0F0F;
+      border: 1px solid #404040;
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+
+    .detail-badge-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #00FFFF;
+    }
+
+    .detail-badge-label {
+      font-size: 0.7rem;
+      color: #909090;
+      margin-top: 2px;
+    }
+
+    .toggle-btn {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .toggle-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    }
+
+    .toggle-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid #404040;
+    }
+
+    .no-players {
+      text-align: center;
+      padding: 48px 20px;
+      color: #909090;
     }
   </style>
 </head>
-<body class="bg-ultra-dark">
-  <!-- Navigation Bar -->
-  <nav class="nav-bar sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-8">
-        <h1 class="text-2xl font-bold accent-gold text-2xl tracking-wider">DOORS</h1>
-        <ul class="flex gap-8 text-sm font-600 hidden md:flex">
-          <li><a href="#" class="text-gray-300 hover:text-yellow-500 transition">Rankings</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-yellow-500 transition">Statistics</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-yellow-500 transition">Apply</a></li>
-        </ul>
-      </div>
-      <div class="flex items-center gap-4">
-        <input type="text" id="globalSearch" placeholder="Search players..." class="input-field w-48 hidden md:block" />
-      </div>
-    </div>
-  </nav>
-
-  <!-- Header Hero -->
-  <header class="header-hero py-12 relative">
-    <div class="max-w-7xl mx-auto px-6 relative z-10">
-      <div class="mb-2">
-        <span class="inline-block accent-cyber text-sm font-700 tracking-widest">GLOBAL LEADERBOARD</span>
-      </div>
-      <h2 class="text-5xl font-bold text-white mb-3">Player Rankings</h2>
-      <p class="text-gray-400 max-w-2xl">Elite rankings determined by comprehensive performance analysis including score, doors cleared, wins, runs completed, and strategic achievements.</p>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <div class="max-w-7xl mx-auto px-6 py-12">
-    <!-- Stats Overview -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
-      <div class="stat-box">
-        <div class="stat-label mb-2">Total Players</div>
-        <div class="stat-value" id="total-players">0</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label mb-2">Online Now</div>
-        <div class="stat-value" id="online-count">0</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label mb-2">Total Wins</div>
-        <div class="stat-value" id="total-wins">0</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label mb-2">Avg Doors Cleared</div>
-        <div class="stat-value" id="avg-doors">0</div>
+<body>
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="header">
+      <div class="text-center">
+        <h1>🚪 DOORS GLOBAL LEADERBOARD 🏆</h1>
+        <p>Intelligent Ranking System | DOORS Player Rankings</p>
       </div>
     </div>
 
-    <!-- Leaderboard Tabs -->
-    <div class="bg-dark-panel border border-subtle rounded-lg overflow-hidden mb-8">
-      <div class="flex overflow-x-auto border-b border-subtle">
-        <button class="tab-btn px-6 py-4 whitespace-nowrap active transition-all text-sm font-600" data-tab="overall">⭐ Overall Ranking</button>
-        <button class="tab-btn px-6 py-4 whitespace-nowrap transition-all text-sm font-600" data-tab="score">📊 By Score</button>
-        <button class="tab-btn px-6 py-4 whitespace-nowrap transition-all text-sm font-600" data-tab="doors">🚪 By Doors Cleared</button>
-        <button class="tab-btn px-6 py-4 whitespace-nowrap transition-all text-sm font-600" data-tab="wins">🏆 By Wins</button>
-        <button class="tab-btn px-6 py-4 whitespace-nowrap transition-all text-sm font-600" data-tab="runs">🏃 By Runs</button>
-        <button class="tab-btn px-6 py-4 whitespace-nowrap transition-all text-sm font-600" data-tab="achievements">🎯 By Achievements</button>
-        <button class="tab-btn px-6 py-4 whitespace-nowrap transition-all text-sm font-600" data-tab="items">📦 By Items</button>
-      </div>
-
-      <!-- Leaderboard Table -->
-      <div class="scroll-container">
-        <table class="leaderboard-table w-full text-sm">
-          <thead>
-            <tr class="table-header">
-              <th class="p-4 text-left">Rank</th>
-              <th class="p-4 text-left">Player</th>
-              <th class="p-4 text-center" id="header-col-1">Score</th>
-              <th class="p-4 text-center" id="header-col-2">Doors</th>
-              <th class="p-4 text-center" id="header-col-3">Wins</th>
-              <th class="p-4 text-center" id="header-col-4">Runs</th>
-              <th class="p-4 text-center" id="header-col-5">Status</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboard-body">
-          </tbody>
-        </table>
-      </div>
+    <!-- Controls -->
+    <div class="controls">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search player by name...">
+      <select id="sortSelect" class="sort-select">
+        <option value="overall">Sort: Overall Score</option>
+        <option value="wins">Sort: Total Wins</option>
+        <option value="hours">Sort: Hours Played</option>
+        <option value="deaths">Sort: Total Deaths</option>
+        <option value="knobs">Sort: Total Knobs</option>
+      </select>
     </div>
 
-    <!-- Bottom Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <!-- Apply Form -->
-      <div class="bg-dark-panel border border-subtle rounded-lg p-8">
-        <h3 class="text-2xl font-bold mb-6">Apply to Rankings</h3>
-        <form id="application-form" class="space-y-4">
-          <div class="grid grid-cols-2 gap-4">
-            <input type="text" id="app-nick" placeholder="Nickname" class="input-field" required />
-            <input type="number" id="app-score" placeholder="Score" class="input-field" required />
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <input type="number" id="app-doors" placeholder="Doors Cleared" class="input-field" required />
-            <input type="number" id="app-runs" placeholder="Total Runs" class="input-field" required />
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <input type="text" id="app-region" placeholder="Region" class="input-field" required />
-            <select id="app-status" class="input-field" required>
-              <option value="">Select Status</option>
-              <option value="Online">Online</option>
-              <option value="Offline">Offline</option>
-            </select>
-          </div>
-          <button type="submit" class="btn-primary w-full">Submit Application</button>
-        </form>
-      </div>
-
-      <!-- Recent Applications -->
-      <div class="bg-dark-panel border border-subtle rounded-lg p-8">
-        <h3 class="text-2xl font-bold mb-6">Recent Applications</h3>
-        <div id="recent-apps" class="space-y-3 max-h-80 overflow-y-auto">
-          <p class="text-gray-500 text-center py-8">No applications yet</p>
-        </div>
-      </div>
+    <!-- Players Container -->
+    <div class="players-container" id="playersContainer">
+      <div class="no-players">Loading players...</div>
     </div>
   </div>
+
   <script src="playersdata.js"></script>
   <script>
-    // =============== RANKING ALGORITHM ===============
-    
-    const STAT_KEYS = {
-      score: { label: 'Score', weight: 0.25 },
-      doorsCleared: { label: 'Doors Cleared', weight: 0.2 },
-      totalWins: { label: 'Total Wins', weight: 0.2 },
-      totalRuns: { label: 'Total Runs', weight: 0.15 },
-      achievementsUnlocked: { label: 'Achievements', weight: 0.1 },
-      itemsCollected: { label: 'Items Collected', weight: 0.1 }
-    };
-
-    class RankingSystem {
-      constructor(players) {
-        this.players = JSON.parse(JSON.stringify(players));
-        this.normalize();
-        this.calculateOverallRanking();
-      }
-
-      normalize() {
-        const normalized = {};
-        
-        for (const key in STAT_KEYS) {
-          const values = this.players.map(p => p[key] || 0).filter(v => v > 0);
-          const max = Math.max(...values, 1);
-          normalized[key] = { max };
-        }
-
-        this.players = this.players.map(player => {
-          const normalized_scores = {};
-          for (const key in STAT_KEYS) {
-            const value = player[key] || 0;
-            const max = normalized[key].max;
-            normalized_scores[key] = max > 0 ? (value / max) * 100 : 0;
-          }
-          return { ...player, normalized_scores };
-        });
-      }
-
-      calculateOverallRanking() {
-        this.players.forEach(player => {
-          let overallScore = 0;
-          for (const key in STAT_KEYS) {
-            const weight = STAT_KEYS[key].weight;
-            const score = player.normalized_scores[key] || 0;
-            overallScore += (score * weight);
-          }
-          player.overallRank = overallScore;
-        });
-      }
-
-      getRankingByKey(key) {
-        return [...this.players].sort((a, b) => (b[key] || 0) - (a[key] || 0));
-      }
-
-      getOverallRanking() {
-        return [...this.players].sort((a, b) => b.overallRank - a.overallRank);
-      }
+    // Format numbers with K/M notation
+    function formatNumber(num) {
+      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+      return num.toLocaleString();
     }
 
-    let rankingSystem = new RankingSystem(playersData);
-    let currentTab = 'overall';
-    let currentData = rankingSystem.getOverallRanking();
+    // Calculate overall score
+    function calculateOverallScore(player) {
+      const maxMetrics = {
+        wins: Math.max(...playersData.map(p => p.totalWins || 0)),
+        knobs: Math.max(...playersData.map(p => p.totalKnobs || 0)),
+        deaths: Math.max(...playersData.map(p => p.totalDeaths || 0)),
+        hours: Math.max(...playersData.map(p => p.hoursPlayed || 0)),
+        badges: Math.max(...playersData.map(p => (p.doorsTotal || 0) + (p.hdBadges || 0) + (p.ghostHuntBadges || 0) + (p.findApplesBadges || 0))),
+        revives: Math.max(...playersData.map(p => p.totalRevives || 0))
+      };
 
-    // =============== UI FUNCTIONS ===============
+      const scores = {
+        wins: ((player.totalWins || 0) / (maxMetrics.wins || 1)) * 100,
+        knobs: ((player.totalKnobs || 0) / (maxMetrics.knobs || 1)) * 100,
+        deaths: ((player.totalDeaths || 0) / (maxMetrics.deaths || 1)) * 100,
+        hours: ((player.hoursPlayed || 0) / (maxMetrics.hours || 1)) * 100,
+        badges: (((player.doorsTotal || 0) + (player.hdBadges || 0) + (player.ghostHuntBadges || 0) + (player.findApplesBadges || 0)) / (maxMetrics.badges || 1)) * 100,
+        revives: ((player.totalRevives || 0) / (maxMetrics.revives || 1)) * 100
+      };
 
-    function updateStats() {
-      document.getElementById('total-players').textContent = playersData.length;
-      document.getElementById('online-count').textContent = playersData.filter(p => p.status === 'Online').length;
-      document.getElementById('total-wins').textContent = playersData.reduce((sum, p) => sum + (p.totalWins || 0), 0);
-      const avgDoors = Math.round(playersData.reduce((sum, p) => sum + (p.doorsCleared || 0), 0) / playersData.length);
-      document.getElementById('avg-doors').textContent = avgDoors || 0;
-    }
-
-    function createRankBadge(rank) {
-      if (rank === 1) return `<div class="rank-badge rank-1">${rank}</div>`;
-      if (rank === 2) return `<div class="rank-badge rank-2">${rank}</div>`;
-      if (rank === 3) return `<div class="rank-badge rank-3">${rank}</div>`;
-      return `<div class="rank-badge" style="background-color: #404040; color: #FFD700;">${rank}</div>`;
-    }
-
-    function renderLeaderboard(data, sortKey = 'overall') {
-      const tbody = document.getElementById('leaderboard-body');
-      tbody.innerHTML = '';
-
-      if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-gray-500">No players data</td></tr>';
-        return;
+      // Weighted average
+      const weights = { wins: 0.25, knobs: 0.20, deaths: 0.15, hours: 0.15, badges: 0.15, revives: 0.10 };
+      let overall = 0;
+      for (const key in weights) {
+        overall += scores[key] * weights[key];
       }
+      return Math.min(100, overall);
+    }
 
-      data.forEach((player, index) => {
-        const rank = index + 1;
-        const bgClass = index % 2 === 0 ? 'table-row-even' : 'table-row-odd';
-        const isOnline = player.status === 'Online';
-        
-        let col1 = '', col2 = '', col3 = '', col4 = '', col5 = '';
-        
-        if (sortKey === 'overall') {
-          col1 = `${player.score}`;
-          col2 = `${player.doorsCleared}`;
-          col3 = `${player.totalWins}`;
-          col4 = `${player.totalRuns}`;
-          col5 = player.overallRank ? player.overallRank.toFixed(1) : '0';
-        } else if (sortKey === 'score') {
-          col1 = `${player.score}`;
-          col2 = `${player.doorsCleared}`;
-          col3 = `${player.totalWins}`;
-          col4 = `${player.totalRuns}`;
-          col5 = player.score;
-        } else if (sortKey === 'doors') {
-          col1 = `${player.doorsCleared}`;
-          col2 = `${player.score}`;
-          col3 = `${player.totalWins}`;
-          col4 = `${player.totalRuns}`;
-          col5 = player.doorsCleared;
-        } else if (sortKey === 'wins') {
-          col1 = `${player.totalWins}`;
-          col2 = `${player.score}`;
-          col3 = `${player.doorsCleared}`;
-          col4 = `${player.totalRuns}`;
-          col5 = player.totalWins;
-        } else if (sortKey === 'runs') {
-          col1 = `${player.totalRuns}`;
-          col2 = `${player.score}`;
-          col3 = `${player.doorsCleared}`;
-          col4 = `${player.totalWins}`;
-          col5 = player.totalRuns;
-        } else if (sortKey === 'achievements') {
-          col1 = `${player.achievementsUnlocked || 0}`;
-          col2 = `${player.score}`;
-          col3 = `${player.doorsCleared}`;
-          col4 = `${player.totalWins}`;
-          col5 = player.achievementsUnlocked || 0;
-        } else if (sortKey === 'items') {
-          col1 = `${player.itemsCollected || 0}`;
-          col2 = `${player.score}`;
-          col3 = `${player.doorsCleared}`;
-          col4 = `${player.totalWins}`;
-          col5 = player.itemsCollected || 0;
-        }
+    // Get rank badge class
+    function getRankBadgeClass(rank) {
+      if (rank === 1) return 'rank-badge rank-1';
+      if (rank === 2) return 'rank-badge rank-2';
+      if (rank === 3) return 'rank-badge rank-3';
+      return 'rank-badge rank-other';
+    }
 
-        const row = document.createElement('tr');
-        row.className = `table-row ${bgClass}`;
-        row.innerHTML = `
-          <td class="p-4">${createRankBadge(rank)}</td>
-          <td class="p-4">
+    // Create player card
+    function createPlayerCard(player, rank) {
+      const overallScore = calculateOverallScore(player);
+      const totalBadges = (player.doorsTotal || 0) + (player.hdBadges || 0) + (player.ghostHuntBadges || 0) + (player.findApplesBadges || 0);
+
+      const card = document.createElement('div');
+      card.className = 'player-card';
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="${getRankBadgeClass(rank)}" data-rank="${rank}">${rank}</div>
+          <div class="player-info">
             <div class="player-name">${player.name}</div>
-            <div class="text-gray-500 text-xs">${player.region || 'N/A'}</div>
-          </td>
-          <td class="p-4 text-center">${col1}</td>
-          <td class="p-4 text-center">${col2}</td>
-          <td class="p-4 text-center">${col3}</td>
-          <td class="p-4 text-center">${col4}</td>
-          <td class="p-4 text-center">
-            <span class="online-indicator ${isOnline ? 'online' : 'offline'}">
-              ${isOnline ? '● Online' : '○ Offline'}
-            </span>
-          </td>
-        `;
-        row.style.cursor = 'pointer';
-        row.addEventListener('click', () => showPlayerDetail(player));
-        tbody.appendChild(row);
-      });
+            <div class="player-meta">
+              <div class="player-stat">📍 ${player.region || 'Unknown'}</div>
+              <div class="player-stat">⏱️ ${formatNumber(player.hoursPlayed)} hrs</div>
+            </div>
+          </div>
+          <div>
+            <div class="overall-score">${overallScore.toFixed(1)}</div>
+            <div class="overall-label">Overall</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <!-- Main Stats -->
+          <div class="stat-grid">
+            <div class="stat-item">
+              <div class="stat-item-value">${formatNumber(player.totalWins)}</div>
+              <div class="stat-item-label">Total Wins</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-item-value">${formatNumber(player.totalDeaths)}</div>
+              <div class="stat-item-label">Deaths</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-item-value">${formatNumber(player.totalKnobs)}</div>
+              <div class="stat-item-label">Knobs</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-item-value">${formatNumber(player.totalRevives)}</div>
+              <div class="stat-item-label">Revives</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-item-value">${formatNumber(player.daysActive)}</div>
+              <div class="stat-item-label">Days Active</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-item-value">${formatNumber(totalBadges)}</div>
+              <div class="stat-item-label">Badges</div>
+            </div>
+          </div>
+
+          <!-- Floor Wins -->
+          <div class="section-title">🚪 Floor Wins</div>
+          <div class="details-grid">
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.winsHotel || 0)}</div>
+              <div class="detail-badge-label">Hotel</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.winsLegacyHotel || 0)}</div>
+              <div class="detail-badge-label">Legacy</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.winsRooms || 0)}</div>
+              <div class="detail-badge-label">Rooms</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.winsBackdoor || 0)}</div>
+              <div class="detail-badge-label">Backdoor</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.winsMines || 0)}</div>
+              <div class="detail-badge-label">Mines</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.winsOutdoors || 0)}</div>
+              <div class="detail-badge-label">Outdoors</div>
+            </div>
+          </div>
+
+          <!-- Special Modes -->
+          <div class="section-title">🎮 Special Modes</div>
+          <div class="details-grid">
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.winsSuperHardMode || 0)}</div>
+              <div class="detail-badge-label">Super Hard</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.winsHotelHell || 0)}</div>
+              <div class="detail-badge-label">Hell</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.winsRetroMode || 0)}</div>
+              <div class="detail-badge-label">Retro</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.winsVoidBusters || 0)}</div>
+              <div class="detail-badge-label">Void</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.winsChaosMode || 0)}</div>
+              <div class="detail-badge-label">Chaos</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.winsMatchmaking || 0)}</div>
+              <div class="detail-badge-label">Ranked</div>
+            </div>
+          </div>
+
+          <!-- Badges -->
+          <div class="section-title">🏅 Achievement Badges</div>
+          <div class="details-grid">
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.doorsTotal || 0)}</div>
+              <div class="detail-badge-label">Doors</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.hdBadges || 0)}</div>
+              <div class="detail-badge-label">H"D"</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.ghostHuntBadges || 0)}</div>
+              <div class="detail-badge-label">Ghost</div>
+            </div>
+            <div class="detail-badge">
+              <div class="detail-badge-value">${formatNumber(player.findApplesBadges || 0)}</div>
+              <div class="detail-badge-label">Apples</div>
+            </div>
+          </div>
+
+          <div class="toggle-section">
+            <span style="color: #909090; font-size: 0.9rem;">Completion: ${player.completionPercentage || 0}%</span>
+            <button class="toggle-btn" onclick="toggleCard(this)">Collapse</button>
+          </div>
+        </div>
+      `;
+
+      card.querySelector('.card-header').addEventListener('click', () => toggleCard(card.querySelector('.toggle-btn')));
+      return card;
     }
 
-    function showPlayerDetail(player) {
-      alert(`
-Player: ${player.name}
-Region: ${player.region}
-Status: ${player.status}
-
-=== STATISTICS ===
-Score: ${player.score}
-Doors Cleared: ${player.doorsCleared}
-Total Wins: ${player.totalWins}
-Total Runs: ${player.totalRuns}
-Achievements: ${player.achievementsUnlocked || 0}
-Items Collected: ${player.itemsCollected || 0}
-
-=== WINS BREAKDOWN ===
-Hotel: ${player.winsHotel || 0} | Mines: ${player.winsMines || 0} | Backdoor: ${player.winsBackdoor || 0}
-      `);
+    // Toggle card expansion
+    function toggleCard(btn) {
+      const card = btn.closest('.player-card');
+      const body = card.querySelector('.card-body');
+      body.classList.toggle('expanded');
+      btn.textContent = body.classList.contains('expanded') ? 'Collapse' : 'Expand';
     }
 
-    function updateTableHeaders(tab) {
-      const headers = {
-        overall: ['Score', 'Doors', 'Wins', 'Runs', 'Overall'],
-        score: ['Score', 'Doors', 'Wins', 'Runs', 'Total Score'],
-        doors: ['Doors', 'Score', 'Wins', 'Runs', 'Doors Cleared'],
-        wins: ['Wins', 'Score', 'Doors', 'Runs', 'Total Wins'],
-        runs: ['Runs', 'Score', 'Doors', 'Wins', 'Total Runs'],
-        achievements: ['Achievements', 'Score', 'Doors', 'Wins', 'Unlocked'],
-        items: ['Items', 'Score', 'Doors', 'Wins', 'Collected']
-      };
+    // Render players
+    function renderPlayers(players, sortBy = 'overall') {
+      const container = document.getElementById('playersContainer');
       
-      for (let i = 1; i <= 5; i++) {
-        document.getElementById(`header-col-${i}`).textContent = headers[tab]?.[i - 1] || 'N/A';
-      }
-    }
-
-    // =============== EVENT LISTENERS ===============
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        currentTab = btn.dataset.tab;
-        
-        if (currentTab === 'overall') {
-          currentData = rankingSystem.getOverallRanking();
-          renderLeaderboard(currentData, 'overall');
-        } else {
-          const key = {
-            score: 'score',
-            doors: 'doorsCleared',
-            wins: 'totalWins',
-            runs: 'totalRuns',
-            achievements: 'achievementsUnlocked',
-            items: 'itemsCollected'
-          }[currentTab];
-          
-          currentData = rankingSystem.getRankingByKey(key);
-          renderLeaderboard(currentData, key);
-        }
-        
-        updateTableHeaders(currentTab);
-      });
-    });
-
-    document.getElementById('globalSearch').addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      const filtered = currentData.filter(p => p.name.toLowerCase().includes(query));
-      renderLeaderboard(filtered, currentTab);
-    });
-
-    document.getElementById('application-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      const app = {
-        nick: document.getElementById('app-nick').value,
-        score: parseInt(document.getElementById('app-score').value),
-        doors: parseInt(document.getElementById('app-doors').value),
-        runs: parseInt(document.getElementById('app-runs').value),
-        region: document.getElementById('app-region').value,
-        status: document.getElementById('app-status').value,
-        timestamp: new Date().toISOString()
-      };
-
-      const apps = JSON.parse(localStorage.getItem('applications') || '[]');
-      apps.push(app);
-      localStorage.setItem('applications', JSON.stringify(apps));
-      
-      e.target.reset();
-      renderRecentApps();
-      alert('✓ Application submitted successfully!');
-    });
-
-    function renderRecentApps() {
-      const apps = JSON.parse(localStorage.getItem('applications') || '[]');
-      const container = document.getElementById('recent-apps');
-      container.innerHTML = '';
-      
-      if (apps.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-center py-8">No applications yet</p>';
+      if (!players || players.length === 0) {
+        container.innerHTML = '<div class="no-players">No players found</div>';
         return;
       }
 
-      apps.slice(-10).reverse().forEach(app => {
-        const div = document.createElement('div');
-        div.className = 'bg-content-panel border border-subtle rounded p-4';
-        div.innerHTML = `
-          <div class="flex justify-between items-start">
-            <div>
-              <p class="font-bold accent-gold">${app.nick}</p>
-              <p class="text-xs text-gray-500">${app.region}</p>
-            </div>
-            <p class="text-sm font-600">Score: <span class="accent-cyber">${app.score}</span></p>
-          </div>
-          <p class="text-xs text-gray-500 mt-2">${new Date(app.timestamp).toLocaleDateString()}</p>
-        `;
-        container.appendChild(div);
+      // Sort players
+      let sorted = [...players];
+      if (sortBy === 'overall') {
+        sorted.sort((a, b) => calculateOverallScore(b) - calculateOverallScore(a));
+      } else if (sortBy === 'wins') {
+        sorted.sort((a, b) => (b.totalWins || 0) - (a.totalWins || 0));
+      } else if (sortBy === 'hours') {
+        sorted.sort((a, b) => (b.hoursPlayed || 0) - (a.hoursPlayed || 0));
+      } else if (sortBy === 'deaths') {
+        sorted.sort((a, b) => (b.totalDeaths || 0) - (a.totalDeaths || 0));
+      } else if (sortBy === 'knobs') {
+        sorted.sort((a, b) => (b.totalKnobs || 0) - (a.totalKnobs || 0));
+      }
+
+      container.innerHTML = '';
+      sorted.forEach((player, index) => {
+        container.appendChild(createPlayerCard(player, index + 1));
       });
     }
 
-    // =============== INITIALIZATION ===============
-    
-    window.addEventListener('load', () => {
-      updateStats();
-      renderLeaderboard(currentData, 'overall');
-      renderRecentApps();
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      const filtered = playersData.filter(p => p.name.toLowerCase().includes(query));
+      const sortBy = document.getElementById('sortSelect').value;
+      renderPlayers(filtered, sortBy);
     });
+
+    document.getElementById('sortSelect').addEventListener('change', (e) => {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = playersData.filter(p => p.name.toLowerCase().includes(query));
+      renderPlayers(filtered, e.target.value);
+    });
+
+    // Initial render
+    renderPlayers(playersData, 'overall');
   </script>
 </body>
 </html>
