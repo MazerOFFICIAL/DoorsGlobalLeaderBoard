@@ -10,6 +10,7 @@
       font-family: Inter, system-ui, sans-serif;
       color: #eef2ff;
       background: #060a1e;
+      font-size: 16px;
     }
 
     * {
@@ -24,7 +25,7 @@
     }
 
     .page {
-      max-width: 1200px;
+      max-width: 1240px;
       margin: 0 auto;
       padding: 28px 20px 40px;
     }
@@ -42,7 +43,7 @@
     }
 
     .hero h1 {
-      font-size: clamp(2.6rem, 5vw, 4rem);
+      font-size: clamp(2.8rem, 5vw, 4.4rem);
       line-height: 1.02;
       letter-spacing: -0.04em;
     }
@@ -54,14 +55,46 @@
       line-height: 1.7;
     }
 
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(180px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .summary-card {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+      border-radius: 24px;
+      background: rgba(16, 24, 56, 0.96);
+      border: 1px solid rgba(93, 125, 255, 0.16);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+    }
+
+    .summary-card strong {
+      display: block;
+      font-size: 2rem;
+      color: #f8fbff;
+      line-height: 1;
+    }
+
+    .summary-card span {
+      color: #bfc9ff;
+      font-size: 0.95rem;
+    }
+
     .dashboard-grid {
       display: grid;
       grid-template-columns: 1.7fr 1fr;
       gap: 24px;
+      margin-bottom: 24px;
     }
 
     .board-card,
-    .sidebar-card {
+    .sidebar-card,
+    .application-card,
+    .wiki-card {
       background: rgba(15, 24, 57, 0.94);
       border: 1px solid rgba(86, 111, 255, 0.16);
       border-radius: 28px;
@@ -71,10 +104,11 @@
 
     .section-header {
       display: flex;
-      align-items: center;
+      align-items: baseline;
       justify-content: space-between;
       gap: 16px;
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
     .section-header h2 {
@@ -85,6 +119,7 @@
 
     .section-header small {
       color: #8fa0ff;
+      line-height: 1.4;
     }
 
     .controls {
@@ -95,27 +130,37 @@
     }
 
     .controls input,
-    .controls button {
-      padding: 14px 18px;
+    .controls select,
+    .controls button,
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 14px 16px;
       border-radius: 999px;
       border: 1px solid rgba(226, 232, 255, 0.16);
-      font-size: 0.95rem;
-      color: #eef2ff;
       background: rgba(226, 232, 255, 0.06);
+      color: #eef2ff;
+      font: inherit;
     }
 
-    .controls input::placeholder {
+    .controls input::placeholder,
+    .field input::placeholder,
+    .field textarea::placeholder {
       color: rgba(226, 232, 255, 0.6);
     }
 
-    .controls button {
+    .controls button,
+    .form-submit {
       min-width: 170px;
       background: linear-gradient(135deg, #5d7dff 0%, #3c5eef 100%);
+      color: #fff;
       cursor: pointer;
       transition: transform 0.18s ease, opacity 0.18s ease;
     }
 
-    .controls button:hover {
+    .controls button:hover,
+    .form-submit:hover {
       transform: translateY(-1px);
       opacity: 0.98;
     }
@@ -174,7 +219,8 @@
     }
 
     .badge,
-    .status-badge {
+    .status-badge,
+    .value-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -200,9 +246,9 @@
       color: #ffd7d7;
     }
 
-    .sidebar-card {
-      display: grid;
-      gap: 22px;
+    .value-badge {
+      background: rgba(100, 126, 255, 0.14);
+      color: #c8d0ff;
     }
 
     .player-card {
@@ -218,8 +264,8 @@
     }
 
     .avatar {
-      width: 92px;
-      height: 92px;
+      width: 96px;
+      height: 96px;
       border-radius: 24px;
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -242,18 +288,19 @@
       color: #f8fbff;
     }
 
-    .stat-line {
+    .round-card {
       display: grid;
-      gap: 12px;
+      gap: 14px;
       padding: 18px;
       border-radius: 22px;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .stat-grid {
+    .stat-grid,
+    .form-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
     }
 
@@ -317,14 +364,105 @@
       font-weight: 600;
     }
 
+    .field {
+      display: grid;
+      gap: 10px;
+    }
+
+    .field label {
+      font-size: 0.95rem;
+      color: #c5d4ff;
+    }
+
+    .field textarea {
+      min-height: 110px;
+      border-radius: 20px;
+      resize: vertical;
+      padding-top: 14px;
+    }
+
+    .submit-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hint-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+      color: #c5d4ff;
+      font-size: 0.95rem;
+    }
+
+    .hint-list li {
+      line-height: 1.6;
+    }
+
+    .form-alert {
+      color: #a9eaff;
+      font-size: 0.95rem;
+    }
+
+    .application-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      color: #eef2ff;
+    }
+
+    .application-table th,
+    .application-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+      font-size: 0.92rem;
+    }
+
+    .application-table thead th {
+      color: #99a8ff;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.72rem;
+    }
+
+    .application-tag {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(93, 125, 255, 0.14);
+      color: #c5d4ff;
+      font-size: 0.78rem;
+    }
+
+    .wiki-card ul {
+      display: grid;
+      gap: 10px;
+      padding-left: 20px;
+      color: #cbd4ff;
+      line-height: 1.7;
+    }
+
+    .wiki-card strong {
+      color: #f8fbff;
+    }
+
     .footer {
-      margin-top: 8px;
+      margin-top: 16px;
       color: #8fa0ff;
       font-size: 0.95rem;
     }
 
     @media (max-width: 980px) {
-      .dashboard-grid {
+      .dashboard-grid,
+      .summary-grid,
+      .stat-grid,
+      .form-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -334,11 +472,8 @@
         padding: 20px 16px 30px;
       }
 
-      .controls {
-        grid-template-columns: 1fr;
-      }
-
-      .stat-grid {
+      .controls,
+      .submit-row {
         grid-template-columns: 1fr;
       }
     }
@@ -349,23 +484,38 @@
     <section class="hero">
       <div>
         <p>Roblox Doors Global Leaderboard</p>
-        <h1>Глобальный лидерборд и профиль игрока</h1>
+        <h1>Интерактивный лидерборд в стиле Doors Wiki</h1>
       </div>
-      <p>Здесь собрана продуманная структура таблицы, поиска, сортировки и подробного профиля игрока с живым статусом. В будущем можно подключить данные из Roblox API или вашего собственного сервера.</p>
+      <p>Страница построена как продуманная информационная вики: таблицы, профиль игрока, правила попадания в топ и форма заявки для новых участников.</p>
+    </section>
+
+    <section class="summary-grid">
+      <div class="summary-card">
+        <strong id="playersCount">—</strong>
+        <span>Всего игроков в базе</span>
+      </div>
+      <div class="summary-card">
+        <strong id="onlineCount">—</strong>
+        <span>Игроков онлайн сейчас</span>
+      </div>
+      <div class="summary-card">
+        <strong id="pendingCount">—</strong>
+        <span>Заявок на проверку</span>
+      </div>
     </section>
 
     <section class="dashboard-grid">
       <article class="board-card" aria-labelledby="leaderboardTitle">
         <div class="section-header">
           <div>
-            <h2 id="leaderboardTitle">Таблица лидеров</h2>
-            <small>Кликните на строку для просмотра профиля</small>
+            <h2 id="leaderboardTitle">Лидерборд игроков</h2>
+            <small>Кликните на строку для просмотра полного профиля.</small>
           </div>
-          <span class="badge">Всего игроков: <strong id="playersCount"></strong></span>
+          <span class="value-badge">Статус: рабочая версия</span>
         </div>
 
         <div class="controls">
-          <input id="searchInput" type="search" placeholder="Поиск игрока, статуса или прогресса" aria-label="Поиск игрока" />
+          <input id="searchInput" type="search" placeholder="Поиск игрока, прогресса или статуса" aria-label="Поиск игрока" />
           <button id="sortScoreBtn" type="button">Сортировать: по очкам ↓</button>
         </div>
 
@@ -384,14 +534,14 @@
           </table>
         </div>
 
-        <p class="footer">Данные в таблице загружаются из файла <strong>playersdata.js</strong>. Можно заменить на API.</p>
+        <p class="footer">Все показатели загружаются из <strong>playersdata.js</strong>. Для реального сервера подключите API или базу данных.</p>
       </article>
 
       <aside class="sidebar-card" aria-labelledby="profileTitle">
         <div class="section-header">
           <div>
             <h2 id="profileTitle">Профиль игрока</h2>
-            <small>Живой статус и статистика выбранного игрока</small>
+            <small>Показано текущее состояние выбранного лидера.</small>
           </div>
         </div>
 
@@ -404,52 +554,167 @@
               <strong id="profileName">ShadowRunner</strong>
               <div class="player-name">
                 <span>Ранг: <strong id="profileRank">1</strong></span>
+                <span class="status-badge" id="profileStatus">Online</span>
+              </div>
             </div>
           </div>
 
-          <div class="stat-line">
+          <div class="round-card">
             <div class="progress-row">
               <div class="progress-label">
                 <span>Прогресс</span>
                 <span id="profileProgressLabel">Alpha</span>
               </div>
               <div class="progress-bar">
-                <div class="progress-fill" id="profileProgressBar" style="width: 78%"></div>
+                <div class="progress-fill" id="profileProgressBar" style="width: 86%"></div>
               </div>
             </div>
 
             <div class="details-list">
-              <div class="details-item"><span>оследняя активность</span><span id="profileLastActive">Сейчас в игре</span></div>
-              <div class="details-item"><span>окация</span><span id="profileLiveRoom">Сокровищница</span></div>
-              <div class="details-item"><span>егион</span><span id="profileRegion">вропа</span></div>
+              <div class="details-item"><span>Последняя активность</span><span id="profileLastActive">Now playing</span></div>
+              <div class="details-item"><span>Локация</span><span id="profileLiveRoom">Treasure Vault</span></div>
+              <div class="details-item"><span>Регион</span><span id="profileRegion">Europe</span></div>
             </div>
           </div>
 
           <div class="stat-grid">
             <div class="stat-card">
               <strong id="profileScore">17 420</strong>
-              <span>бщие очки</span>
+              <span>Общие очки</span>
             </div>
             <div class="stat-card">
               <strong id="profileDoors">53</strong>
-              <span>ройдено дверей</span>
+              <span>Пройдено дверей</span>
             </div>
             <div class="stat-card">
               <strong id="profileRuns">128</strong>
               <span>Всего запусков</span>
             </div>
             <div class="stat-card">
-              <strong id="profileWeapon">ечать Тьмы</strong>
-              <span>юбимое оружие</span>
+              <strong id="profileWeapon">Dark Seal</strong>
+              <span>Любимое оружие</span>
             </div>
           </div>
 
           <div class="details-list">
-            <div class="details-item"><span>учший результат</span><span id="profileBestRun">ровень 90</span></div>
-            <div class="details-item"><span>писание</span><span id="profileNotes">идер по очкам и частоте игр.</span></div>
+            <div class="details-item"><span>Лучший результат</span><span id="profileBestRun">Level 90</span></div>
+            <div class="details-item"><span>Описание</span><span id="profileNotes">Leader by score and playtime, always active.</span></div>
           </div>
         </div>
       </aside>
+    </section>
+
+    <section class="application-card" aria-labelledby="applicationTitle">
+      <div class="section-header">
+        <div>
+          <h2 id="applicationTitle">Заявка на лидерборд</h2>
+          <small>Заполните данные, чтобы попасть в базу кандидатов на проверку.</small>
+        </div>
+        <span class="value-badge">Текущие заявки: <strong id="pendingCountShort">—</strong></span>
+      </div>
+
+      <form id="applicationForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="appName">Игровой ник Roblox</label>
+            <input id="appName" name="appName" type="text" placeholder="ShadowRunner" required />
+          </div>
+          <div class="field">
+            <label for="appScore">Очки</label>
+            <input id="appScore" name="appScore" type="number" min="0" placeholder="17420" required />
+          </div>
+          <div class="field">
+            <label for="appProgress">Прогресс</label>
+            <select id="appProgress" name="appProgress" required>
+              <option value="Alpha">Alpha</option>
+              <option value="Ghost">Ghost</option>
+              <option value="Nightmare">Nightmare</option>
+              <option value="Canyon">Canyon</option>
+              <option value="Lost Floor">Lost Floor</option>
+              <option value="Night Mode">Night Mode</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="appStatus">Статус</label>
+            <select id="appStatus" name="appStatus" required>
+              <option value="Online">Online</option>
+              <option value="Offline">Offline</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="appRoom">Текущая локация</label>
+            <input id="appRoom" name="appRoom" type="text" placeholder="Treasure Vault" required />
+          </div>
+          <div class="field">
+            <label for="appRegion">Регион</label>
+            <input id="appRegion" name="appRegion" type="text" placeholder="Europe" required />
+          </div>
+          <div class="field">
+            <label for="appDoors">Пройдено дверей</label>
+            <input id="appDoors" name="appDoors" type="number" min="0" placeholder="53" />
+          </div>
+          <div class="field">
+            <label for="appRuns">Всего запусков</label>
+            <input id="appRuns" name="appRuns" type="number" min="0" placeholder="128" />
+          </div>
+          <div class="field">
+            <label for="appWeapon">Любимое оружие</label>
+            <input id="appWeapon" name="appWeapon" type="text" placeholder="Dark Seal" />
+          </div>
+          <div class="field" style="grid-column: 1 / -1;">
+            <label for="appNotes">Краткая информация</label>
+            <textarea id="appNotes" name="appNotes" placeholder="Например: люблю рейды, часто прохожу сложные комнаты."></textarea>
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <button class="form-submit" type="submit">Отправить заявку</button>
+          <p class="form-alert" id="applicationMessage">Заявка сохраняется в браузере. Для живой проверки нужна серверная часть.</p>
+        </div>
+      </form>
+
+      <div class="round-card">
+        <div class="section-header">
+          <div>
+            <h2>Список заявок</h2>
+            <small>Последние заполненные заявки, которые сохраняются локально.</small>
+          </div>
+        </div>
+
+        <table class="application-table" aria-label="Список заявок">
+          <thead>
+            <tr>
+              <th>Игрок</th>
+              <th>Статус</th>
+              <th>Очки</th>
+              <th>Прогресс</th>
+            </tr>
+          </thead>
+          <tbody id="applicationList"></tbody>
+        </table>
+      </div>
+
+      <div class="hint-list">
+        <li><strong>Что обычно добавляют на таких страницах:</strong> правила ранжирования, FAQ, описание прогресса, инструкции для заявок и источники данных.</li>
+        <li>Покажи, какие условия нужны для попадания в топ, например: баллы, уровень, активность.</li>
+        <li>Добавь разделы «Как публикуются данные» и «Откуда берётся статистика».</li>
+      </div>
+    </section>
+
+    <section class="wiki-card" aria-labelledby="wikiTitle">
+      <div class="section-header">
+        <div>
+          <h2 id="wikiTitle">Структура страницы</h2>
+          <small>Почему это похоже на профессиональный игровой вики-проект.</small>
+        </div>
+      </div>
+      <ul>
+        <li><strong>Лидерборд:</strong> табличный формат с сортировкой и поиском по игрокам, прогрессу и статусу.</li>
+        <li><strong>Профиль игрока:</strong> подробная карточка с аватаром, статусом, прогрессом и важной статистикой.</li>
+        <li><strong>Заявки:</strong> форма заполнения, список ожидающих заявок и пояснение, как данные будут проверяться.</li>
+        <li><strong>Вики-описание:</strong> раздел с правилами, FAQ и упоминанием источников данных.</li>
+        <li><strong>Информационные карты:</strong> обзор текущего количества игроков, онлайна и состояния проекта.</li>
+      </ul>
     </section>
   </main>
 
@@ -457,6 +722,9 @@
   <script>
     const leaderboardBody = document.getElementById('leaderboardBody');
     const playersCount = document.getElementById('playersCount');
+    const onlineCount = document.getElementById('onlineCount');
+    const pendingCount = document.getElementById('pendingCount');
+    const pendingCountShort = document.getElementById('pendingCountShort');
     const searchInput = document.getElementById('searchInput');
     const sortScoreBtn = document.getElementById('sortScoreBtn');
     const profileAvatar = document.getElementById('profileAvatar');
@@ -474,25 +742,48 @@
     const profileWeapon = document.getElementById('profileWeapon');
     const profileBestRun = document.getElementById('profileBestRun');
     const profileNotes = document.getElementById('profileNotes');
+    const applicationForm = document.getElementById('applicationForm');
+    const applicationList = document.getElementById('applicationList');
+    const applicationMessage = document.getElementById('applicationMessage');
+
+    const appName = document.getElementById('appName');
+    const appScore = document.getElementById('appScore');
+    const appProgress = document.getElementById('appProgress');
+    const appStatus = document.getElementById('appStatus');
+    const appRoom = document.getElementById('appRoom');
+    const appRegion = document.getElementById('appRegion');
+    const appDoors = document.getElementById('appDoors');
+    const appRuns = document.getElementById('appRuns');
+    const appWeapon = document.getElementById('appWeapon');
+    const appNotes = document.getElementById('appNotes');
 
     let currentPlayer = playersData[0];
     let sortDescending = true;
-    let activeRows = [];
+
+    const storageKey = 'doorsLeaderboardApplications';
+    const applications = JSON.parse(localStorage.getItem(storageKey) || '[]');
 
     function formatScore(value) {
-      return value.toLocaleString('ru-RU');
+      return Number(value).toLocaleString('ru-RU');
     }
 
     function getProgressValue(progress) {
       const map = {
-        'Alpha': 90,
-        'Ghost': 80,
-        'Nightmare': 74,
-        'Canyon': 66,
+        Alpha: 90,
+        Ghost: 80,
+        Nightmare: 74,
+        Canyon: 66,
         'Lost Floor': 58,
         'Night Mode': 52
       };
       return map[progress] || 48;
+    }
+
+    function updateCounters() {
+      playersCount.textContent = playersData.length;
+      onlineCount.textContent = playersData.filter(player => player.status.toLowerCase() === 'online').length;
+      pendingCount.textContent = applications.length;
+      pendingCountShort.textContent = applications.length;
     }
 
     function renderProfile(player) {
@@ -531,10 +822,21 @@
             </td>
             <td>${formatScore(player.score)}</td>
             <td>${player.progress}</td>
-            <td><span class="badge ${player.status.toLowerCase() === 'online' ? '' : 'offline'}">${player.status}</span></td>
+            <td><span class="status-badge ${player.status.toLowerCase() === 'online' ? '' : 'offline'}">${player.status}</span></td>
           </tr>
         `;
       }).join('');
+    }
+
+    function renderApplications() {
+      applicationList.innerHTML = applications.slice(-6).reverse().map(item => `
+        <tr>
+          <td>${item.name}</td>
+          <td><span class="application-tag">${item.status}</span></td>
+          <td>${formatScore(item.score)}</td>
+          <td>${item.progress}</td>
+        </tr>
+      `).join('');
     }
 
     function updateLeaderboard() {
@@ -560,6 +862,57 @@
       updateLeaderboard();
     }
 
+    function saveApplications() {
+      localStorage.setItem(storageKey, JSON.stringify(applications));
+      renderApplications();
+      updateCounters();
+    }
+
+    function clearForm() {
+      appName.value = '';
+      appScore.value = '';
+      appProgress.value = 'Alpha';
+      appStatus.value = 'Online';
+      appRoom.value = '';
+      appRegion.value = '';
+      appDoors.value = '';
+      appRuns.value = '';
+      appWeapon.value = '';
+      appNotes.value = '';
+    }
+
+    function showMessage(text) {
+      applicationMessage.textContent = text;
+    }
+
+    applicationForm.addEventListener('submit', event => {
+      event.preventDefault();
+
+      const application = {
+        name: appName.value.trim(),
+        score: Number(appScore.value),
+        progress: appProgress.value,
+        status: appStatus.value,
+        liveRoom: appRoom.value.trim(),
+        region: appRegion.value.trim(),
+        doorsCleared: Number(appDoors.value) || 0,
+        totalRuns: Number(appRuns.value) || 0,
+        favoriteWeapon: appWeapon.value.trim(),
+        notes: appNotes.value.trim(),
+        createdAt: new Date().toISOString()
+      };
+
+      if (!application.name || !application.score || !application.liveRoom || !application.region) {
+        showMessage('Заполните обязательные поля: ник, очки, локацию и регион.');
+        return;
+      }
+
+      applications.push(application);
+      saveApplications();
+      clearForm();
+      showMessage('Заявка добавлена. Она сохранена локально и появится в списке проверок.');
+    });
+
     window.selectPlayer = selectPlayer;
 
     searchInput.addEventListener('input', updateLeaderboard);
@@ -569,9 +922,11 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-      playersCount.textContent = playersData.length;
+      updateCounters();
       sortPlayers();
       renderProfile(currentPlayer);
+      renderApplications();
+      showMessage('Заполните форму, чтобы отправить заявку.');
     });
   </script>
 </body>
