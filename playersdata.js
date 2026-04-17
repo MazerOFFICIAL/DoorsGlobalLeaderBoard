@@ -5,7 +5,7 @@ const playersData = [
     rank: 1,
     name: "『☑️』ExTB『☑️』",
     status: "Online",
-    region: "UNKNOWN",
+    region: "CIS",
     hoursPlayed: 7749,
     daysActive: 1118,
     totalWins: 5250,
@@ -43,5 +43,87 @@ const playersData = [
       { name: "Meet The Creator", type: "secret", icon: "👑", desc: "Met LSPLASH in-game" }
     ]
   },
-  // ... остальные игроки
+  {
+    id: "ply_002",
+    robloxId: "1", 
+    rank: 2,
+    name: "DoorHunter",
+    status: "Offline",
+    region: "North America",
+    hoursPlayed: 5230,
+    daysActive: 890,
+    totalWins: 3850,
+    totalDeaths: 125430,
+    economy: {
+      knobs: 820450,
+      revivesUsed: 24580,
+      goldLooted: 5230000
+    },
+    floors: {
+      hotel: 1450,
+      mines: 380,
+      rooms: 210,
+      backdoor: 85,
+      hotelHell: 48,
+      superHard: 215,
+      retro: 95
+    },
+    entities: {
+      rush: 52000,
+      ambush: 28000,
+      figure: 15000,
+      seek: 10000,
+      screech: 8000,
+      dupe: 9430,
+      grumble: 2800,
+      a90: 200
+    },
+    badges: [
+      { name: "Hotel Hell", type: "hardcore", icon: "🔥", desc: "Beat The Hotel with +150% Modifiers" },
+      { name: "A-1000", type: "hardcore", icon: "🚪", desc: "Reached the end of The Rooms" },
+      { name: "Rock Bottom", type: "progression", icon: "🪨", desc: "Beat The Hotel" },
+      { name: "Survive The Mines", type: "progression", icon: "⛏️", desc: "Beat The Mines" }
+    ]
+  },
+  {
+    id: "ply_003",
+    robloxId: "2",
+    rank: 3,
+    name: "NightStalker",
+    status: "Online",
+    region: "Asia",
+    hoursPlayed: 3890,
+    daysActive: 650,
+    totalWins: 2950,
+    totalDeaths: 95640,
+    economy: {
+      knobs: 650320,
+      revivesUsed: 19240,
+      goldLooted: 3850000
+    },
+    floors: {
+      hotel: 1100,
+      mines: 310,
+      rooms: 180,
+      backdoor: 70,
+      hotelHell: 38,
+      superHard: 165,
+      retro: 0
+    },
+    entities: {
+      rush: 41000,
+      ambush: 21000,
+      figure: 11000,
+      seek: 7500,
+      screech: 6500,
+      dupe: 6540,
+      grumble: 1900,
+      a90: 200
+    },
+    badges: [
+      { name: "Rock Bottom", type: "progression", icon: "🪨", desc: "Beat The Hotel" },
+      { name: "Survive The Mines", type: "progression", icon: "⛏️", desc: "Beat The Mines" },
+      { name: "Detour", type: "progression", icon: "🗝️", desc: "Entered The Rooms" }
+    ]
+  }
 ];
