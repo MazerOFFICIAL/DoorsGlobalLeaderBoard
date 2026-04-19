@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Audio Downloader</title>
+    <title>Roblox Audio Downloader Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -13,20 +13,20 @@
             font-family: 'Inter', sans-serif;
         }
         body {
-            background: linear-gradient(135deg, #111827, #1f2937, #374151);
-            color: #f3f4f6;
+            background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
+            color: #f8fafc;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
         }
         .container {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
             padding: 40px;
             border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             width: 100%;
             max-width: 420px;
             text-align: center;
@@ -40,7 +40,7 @@
         .input-group {
             margin-bottom: 16px;
         }
-        input, select, button {
+        input, button {
             width: 100%;
             padding: 14px;
             border-radius: 12px;
@@ -49,41 +49,43 @@
             font-size: 15px;
             transition: all 0.2s ease;
         }
-        input, select {
+        input {
             background: rgba(255, 255, 255, 0.05);
             color: #fff;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        input:focus, select:focus {
-            border-color: #6366f1;
+        input:focus {
+            border-color: #3b82f6;
             background: rgba(255, 255, 255, 0.08);
         }
         input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-        option {
-            background: #1f2937;
-            color: #fff;
+            color: rgba(255, 255, 255, 0.3);
         }
         button {
-            background: #6366f1;
+            background: #3b82f6;
             color: #fff;
             font-weight: 600;
             cursor: pointer;
             margin-top: 8px;
         }
-        button:hover {
-            background: #4f46e5;
+        button:hover:not(:disabled) {
+            background: #2563eb;
             transform: translateY(-1px);
         }
-        button:active {
+        button:active:not(:disabled) {
             transform: translateY(1px);
+        }
+        button:disabled {
+            background: #475569;
+            cursor: not-allowed;
+            opacity: 0.7;
         }
         #status {
             margin-top: 20px;
             font-size: 14px;
-            color: #9ca3af;
+            color: #94a3b8;
             min-height: 20px;
+            word-wrap: break-word;
         }
     </style>
 </head>
@@ -91,64 +93,98 @@
     <div class="container">
         <h1>Roblox Sound Decompiler</h1>
         <div class="input-group">
-            <input type="text" id="assetId" placeholder="Введите ID аудио (например: 142376088)">
+            <input type="text" id="assetId" placeholder="Введите ID (например: 142376088)">
         </div>
-        <div class="input-group">
-            <select id="format">
-                <option value="mp3">MP3 Format (.mp3)</option>
-                <option value="ogg">OGG Format (.ogg)</option>
-                <option value="wav">WAV Format (.wav)</option>
-            </select>
-        </div>
-        <button id="downloadBtn">Скачать ассет</button>
+        <button id="downloadBtn">Скачать аудио</button>
         <div id="status"></div>
     </div>
 
     <script>
         const downloadBtn = document.getElementById('downloadBtn');
         const assetIdInput = document.getElementById('assetId');
-        const formatSelect = document.getElementById('format');
         const statusDiv = document.getElementById('status');
 
+        async function getFormatFromSignatures(blob) {
+            const slice = blob.slice(0, 4);
+            const buffer = await slice.arrayBuffer();
+            const view = new DataView(buffer);
+            
+            if (buffer.byteLength >= 4) {
+                const header = view.getUint32(0, false);
+                if (header === 0x4F676753) return 'ogg';
+                if (header === 0x52494646) return 'wav';
+            }
+            
+            if (buffer.byteLength >= 3) {
+                const header24 = (view.getUint16(0, false) << 8) | view.getUint8(2);
+                if (header24 === 0x494433) return 'mp3';
+            }
+            
+            if (buffer.byteLength >= 2) {
+                const header16 = view.getUint16(0, false);
+                if (header16 === 0xFFFB || header16 === 0xFFF3 || header16 === 0xFFFA || header16 === 0xFFF2) return 'mp3';
+            }
+
+            if (blob.type.includes('ogg')) return 'ogg';
+            if (blob.type.includes('wav')) return 'wav';
+            return 'mp3';
+        }
+
         downloadBtn.addEventListener('click', async () => {
-            const id = assetIdInput.value.trim();
+            const id = assetIdInput.value.replace(/\D/g, '');
+            
             if (!id) {
-                statusDiv.textContent = 'Ошибка: введите ID';
+                statusDiv.textContent = 'Ошибка: введите корректный ID';
                 return;
             }
             
-            statusDiv.textContent = 'Получение данных...';
+            downloadBtn.disabled = true;
+            statusDiv.textContent = 'Подключение к API...';
             
             try {
                 let fileName = `roblox_audio_${id}`;
+                let isAudio = true;
+
                 try {
                     const detailsRes = await fetch(`https://economy.roproxy.com/v2/assets/${id}/details`);
                     if (detailsRes.ok) {
                         const details = await detailsRes.json();
                         if (details && details.Name) {
-                            fileName = details.Name.replace(/[^a-z0-9а-яё]/gi, '_').toLowerCase();
+                            fileName = details.Name.replace(/[^a-z0-9а-яё]/gi, '_').toLowerCase() || fileName;
+                        }
+                        if (details.AssetTypeId !== 3) {
+                            isAudio = false;
                         }
                     }
                 } catch (e) {}
 
+                if (!isAudio) {
+                    throw new Error('Этот ID не принадлежит аудио-ассету.');
+                }
+
+                statusDiv.textContent = 'Получение ссылки на файл...';
+                
                 const response = await fetch(`https://assetdelivery.roproxy.com/v2/asset?id=${id}`);
-                if (!response.ok) throw new Error('Fetch failed');
+                if (!response.ok) throw new Error('Не удалось получить данные. Возможно, ассет приватный.');
                 
                 const data = await response.json();
                 if (!data.locations || data.locations.length === 0) {
-                    statusDiv.textContent = 'Ошибка: аудио не найдено или оно приватное.';
-                    return;
+                    throw new Error('Аудио не найдено или скрыто автором.');
                 }
                 
                 const fileUrl = data.locations[0].location;
-                const format = formatSelect.value;
-                const finalName = `${fileName}.${format}`;
-                
-                statusDiv.textContent = 'Скачивание файла...';
+                statusDiv.textContent = 'Скачивание файла (может занять время)...';
                 
                 const proxiedUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(fileUrl)}`;
                 const audioResponse = await fetch(proxiedUrl);
+                
+                if (!audioResponse.ok) throw new Error('Ошибка при загрузке аудио-файла через прокси.');
+                
                 const blob = await audioResponse.blob();
+                statusDiv.textContent = 'Анализ бинарных данных...';
+                
+                const ext = await getFormatFromSignatures(blob);
+                const finalName = `${fileName}.${ext}`;
                 
                 const blobUrl = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -157,11 +193,13 @@
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                URL.revokeObjectURL(blobUrl);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
                 
-                statusDiv.textContent = 'Готово! Файл успешно скачан.';
+                statusDiv.textContent = `Успех! Файл сохранен как .${ext}`;
             } catch (error) {
-                statusDiv.textContent = 'Ошибка. Проверьте ID или доступность серверов.';
+                statusDiv.textContent = `Ошибка: ${error.message}`;
+            } finally {
+                downloadBtn.disabled = false;
             }
         });
     </script>
